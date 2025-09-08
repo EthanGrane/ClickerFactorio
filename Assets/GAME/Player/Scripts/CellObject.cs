@@ -43,8 +43,32 @@ public class CellObject
         this.rotation = rotation;
         obj.transform.rotation = Quaternion.Euler(0,rotation * 90,0);
     }
-}
+    
+    public Vector2Int GetForwardDir()
+    {
+        switch (rotation % 4)
+        {
+            case 0: return Vector2Int.up;
+            case 1: return Vector2Int.right;
+            case 2: return Vector2Int.down;
+            case 3: return Vector2Int.left;
+        }
+        return Vector2Int.zero;
+    }
 
+    public Vector2Int GetRightDir()
+    {
+        switch (rotation % 4)
+        {
+            case 0: return Vector2Int.right;
+            case 1: return Vector2Int.down;
+            case 2: return Vector2Int.left;
+            case 3: return Vector2Int.up;
+        }
+        return Vector2Int.zero;
+    }
+}
+    
 public enum CellType
 {
     Empty,

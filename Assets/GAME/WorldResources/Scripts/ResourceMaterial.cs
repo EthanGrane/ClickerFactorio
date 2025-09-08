@@ -7,6 +7,7 @@ public class ResourceMaterial : MonoBehaviour
 {
     public int resourceHealth = 100;
     public int resourceValue = 1;
+    public string hitSound;
     
     ParticleSystem ps;
     Material material;
@@ -25,6 +26,12 @@ public class ResourceMaterial : MonoBehaviour
     {
         resourceHealth -= damage;
         GameManager.Instance.AddMoney(resourceValue * damage);
+
+        AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)
+            .Volume(0.5f)
+            .PitchVariation(0.25f)
+            .MaxDistance(100f)
+            .Play();
         
         if (ps)
         {

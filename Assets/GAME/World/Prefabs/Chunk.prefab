@@ -136,6 +136,8 @@ MonoBehaviour:
     size: 2
     type: 2
     rotation: 0
+  chunkBuildings: []
+  height: 0
 --- !u!205 &9046077666337526330
 LODGroup:
   m_ObjectHideFlags: 0
@@ -145,16 +147,16 @@ LODGroup:
   m_GameObject: {fileID: 3675691833987684447}
   serializedVersion: 2
   m_LocalReferencePoint: {x: 0, y: -14.985366, z: 0}
-  m_Size: 30.029264
+  m_Size: 1
   m_FadeMode: 1
   m_AnimateCrossFading: 1
   m_LastLODIsBillboard: 0
   m_LODs:
-  - screenRelativeHeight: 0.79677373
+  - screenRelativeHeight: 0.05606169
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 3611817856696405116}
-  - screenRelativeHeight: 0.060368806
+  - screenRelativeHeight: 0.0020103324
     fadeTransitionWidth: 0
     renderers:
     - renderer: {fileID: 1231227674660087861}

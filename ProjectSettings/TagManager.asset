@@ -41,6 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Water
+    uniqueID: 1531331549
+    locked: 0
+  - name: Particles
+    uniqueID: 3841481121
+    locked: 0
   m_RenderingLayers:
   - Default
   - Light Layer 1

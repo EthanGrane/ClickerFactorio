@@ -101,6 +101,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceHealth: 100
+  resourceValue: 1
+  hitSound: HitHighPitch
 --- !u!136 &2171045831262110659
 CapsuleCollider:
   m_ObjectHideFlags: 0

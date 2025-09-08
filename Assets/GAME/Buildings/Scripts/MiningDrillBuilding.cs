@@ -1,0 +1,120 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+public class MiningDrillBuilding : MonoBehaviour, IBuilding
+{
+    public int ticksForInteract = 4;
+    private int currentTicks = 0;
+
+    public List<CellObject> affectedObjects;
+    CellObject cellObject = null;
+
+    // Se llama al colocar el objeto en el mundo
+    public void Initialize(CellObject cellObject)
+    {
+        this.cellObject = cellObject;
+    }
+
+    private void SetupAffectedObjects()
+    {
+        if (cellObject == null) return;
+
+        affectedObjects = new List<CellObject>();
+
+        Vector2Int forward = cellObject.GetForwardDir();
+        Vector2Int right   = cellObject.GetRightDir();
+        
+        int dist = 1;
+        if (cellObject.rotation < 2)
+            dist = 2;
+        
+        Vector2Int frontLocalL = cellObject.position + forward * dist;
+        Vector2Int frontLocalR = cellObject.position + forward * dist - right;
+
+        switch (cellObject.rotation)
+        {
+            case 0: frontLocalR = cellObject.position + forward * dist + right; break;
+            case 1: frontLocalR = cellObject.position + forward * dist - right; break;
+            case 2: frontLocalR = cellObject.position + forward * dist - right; break;
+            case 3: frontLocalR = cellObject.position + forward * dist + right; break;
+
+        }
+        
+        Vector3 worldPosL = cellObject.chunk.GetCellWorldPosition(frontLocalL);
+        Vector3 worldPosR = cellObject.chunk.GetCellWorldPosition(frontLocalR);
+
+        // Obtenemos los chunks que contienen esas posiciones
+        Chunk chunkL = WorldManager.Instance.GetChunk(worldPosL);
+        Chunk chunkR = WorldManager.Instance.GetChunk(worldPosR);
+
+        if (chunkL != null)
+        {
+            Vector2Int localL = chunkL.GetCellCoords(worldPosL);
+            CellObject cellL = chunkL.cellData[localL.x, localL.y];
+            if (cellL != null) affectedObjects.Add(cellL);
+        }
+
+        if (chunkR != null)
+        {
+            Vector2Int localR = chunkR.GetCellCoords(worldPosR);
+            CellObject cellR = chunkR.cellData[localR.x, localR.y];
+            if (cellR != null) affectedObjects.Add(cellR);
+        }
+    }
+
+    public void Tick()
+    {
+        currentTicks++;
+
+        if (currentTicks >= ticksForInteract)
+        {
+            currentTicks = 0;
+
+            if (affectedObjects == null || affectedObjects.Count == 0)
+                SetupAffectedObjects();
+
+            foreach (CellObject cell in affectedObjects)
+            {
+                if (cell.type == CellType.Resource)
+                {
+                    cell.obj.GetComponent<ResourceMaterial>().HarvestMaterial(1);
+                    cell.obj.GetComponent<ResourceMaterial>().BounceObject();
+                }
+            }
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if (cellObject == null) return;
+
+        Vector2Int forward = cellObject.GetForwardDir();
+        Vector2Int right   = cellObject.GetRightDir();
+
+        int dist = 1;
+        if (cellObject.rotation < 2)
+            dist = 2;
+        
+        Vector2Int frontLocalL = cellObject.position + forward * dist;
+        Vector2Int frontLocalR = cellObject.position + forward * dist - right;
+
+        switch (cellObject.rotation)
+        {
+            case 0: frontLocalR = cellObject.position + forward * dist + right; break;
+            case 1: frontLocalR = cellObject.position + forward * dist - right; break;
+            case 2: frontLocalR = cellObject.position + forward * dist - right; break;
+            case 3: frontLocalR = cellObject.position + forward * dist + right; break;
+
+        }
+
+        Vector3 worldPosL = cellObject.chunk.GetCellWorldPosition(frontLocalL);
+        Vector3 worldPosR = cellObject.chunk.GetCellWorldPosition(frontLocalR);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(worldPosL + Vector3.up * 0.5f, Vector3.one * 0.25f);
+        Gizmos.DrawWireCube(worldPosR + Vector3.up * 0.5f, Vector3.one * 0.25f);
+
+        Debug.Log($"Gizmos worldPosL: {worldPosL}");
+        Debug.Log($"Gizmos worldPosR: {worldPosR}");
+    }
+}

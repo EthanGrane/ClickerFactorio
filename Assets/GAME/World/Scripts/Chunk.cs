@@ -1,18 +1,29 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Chunk : MonoBehaviour
 {
     public Vector2Int chunkPosition = Vector2Int.zero;
-    private CellObject[,] cellData = new CellObject[CHUNK_CELL_SIZE, CHUNK_CELL_SIZE];
+    public CellObject[,] cellData = new CellObject[CHUNK_CELL_SIZE, CHUNK_CELL_SIZE];
     [Space]
     public CellObject[] ChunkObjectsPrefabs;
+    public List<CellObject> chunkBuildings = new List<CellObject>();
+    public float height = 0;
 
     public static float CHUNK_SIZE = 10f;
     public static int CHUNK_CELL_SIZE = 8;
-
-    public void InitializeChunk(int seed = 0)
+    public static float CHUNK_SPACING(){return CHUNK_SIZE/CHUNK_CELL_SIZE;}
+    
+    private void Start()
     {
+        WorldManager.Instance.onTick += ApplyTickToBuildings;
+    }
+
+    public void InitializeChunk(int seed = 0, float height = 0)
+    {
+        this.height = height;
         // Inicializamos la grid vacía
         for (int x = 0; x < CHUNK_CELL_SIZE; x++)
             for (int z = 0; z < CHUNK_CELL_SIZE; z++)
@@ -96,7 +107,8 @@ public class Chunk : MonoBehaviour
 
         // Inicializa la data
         objData.Initialize(chunk: this, obj: go, position: pivot, rotation: 0);
-
+        go.name = $"{objData.prefab.name} ({pivot.x}, {pivot.y})";
+        
         // Marca todas las celdas que ocupa como ocupadas
         for (int x = 0; x < size; x++)
         for (int z = 0; z < size; z++)
@@ -112,7 +124,24 @@ public class Chunk : MonoBehaviour
                 case 3: cx += (size - 1 - z); cz += x; break;      // 270°
             }
 
-            cellData[cx, cz] = objData;
+            // Fuera del rango
+            if (cx < 0 || cx >= CHUNK_CELL_SIZE || cz < 0 || cz >= CHUNK_CELL_SIZE)
+            {
+                Vector3 worldPos = GetCellWorldPosition(new Vector2Int(cx, cz));
+                Chunk chunk = WorldManager.Instance.GetChunk(worldPos);
+                
+                Vector2Int cellPos = chunk.GetCellCoords(worldPos);
+                chunk.cellData[cellPos.x, cellPos.y] = objData;
+                
+            }
+            else
+                cellData[cx, cz] = objData;
+        }
+        
+        if(objData.type == CellType.Building)
+        {
+            chunkBuildings.Add(objData);
+            objData.obj.GetComponent<IBuilding>().Initialize(objData);
         }
 
         return objData;
@@ -120,6 +149,7 @@ public class Chunk : MonoBehaviour
 
     public bool CanPlaceCellObject(Vector2Int pivot, int size, int rotation)
     {
+
         for (int x = 0; x < size; x++)
         for (int z = 0; z < size; z++)
         {
@@ -134,15 +164,34 @@ public class Chunk : MonoBehaviour
                 case 3: cx += (size - 1 - z); cz += x; break;
             }
 
-            if (cx < 0 || cx >= CHUNK_CELL_SIZE || cz < 0 || cz >= CHUNK_CELL_SIZE)
-                return false;
 
-            if (cellData[cx, cz] != null)
+            // Fuera del rango
+            if (cx < 0 || cx >= CHUNK_CELL_SIZE || cz < 0 || cz >= CHUNK_CELL_SIZE)
+            {
+                Vector3 worldPos = GetCellWorldPosition(new Vector2Int(cx, cz));
+                Chunk chunk = WorldManager.Instance.GetChunk(worldPos);
+                
+                if (chunk == null) return false;
+
+                if (chunk.height != height)
+                    return false;
+                
+                Vector2Int cellPos = chunk.GetCellCoords(worldPos);
+                if(chunk.cellData[cellPos.x, cellPos.y] == null) return true;
+                
                 return false;
+            }
+
+            // Celda ya ocupada
+            if (cellData[cx, cz] != null)
+            {
+                return false;
+            }
         }
 
         return true;
     }
+
 
     public static int GetRotatedSize(int size, int rotation)
     {
@@ -160,9 +209,27 @@ public class Chunk : MonoBehaviour
         
         if (removeObject.type == CellType.Building)
         {
+            chunkBuildings.Remove(removeObject);
             Destroy(removeObject.obj);
-            removeObject = null;
-            cellData[cellPos.x, cellPos.y] = null;
+            
+            // Marca todas las celdas que ocupa como ocupadas
+            for (int x = 0; x < removeObject.size; x++)
+            for (int z = 0; z < removeObject.size; z++)
+            {
+                int cx = removeObject.position.x;
+                int cz = removeObject.position.y;
+                int size = removeObject.size;
+
+                switch(removeObject.rotation % 4)
+                {
+                    case 0: cx += x; cz += z; break;                    // 0°
+                    case 1: cx += z; cz += (size - 1 - x); break;      // 90°
+                    case 2: cx += (size - 1 - x); cz += (size - 1 - z); break; // 180°
+                    case 3: cx += (size - 1 - z); cz += x; break;      // 270°
+                }
+
+                cellData[cx, cz] = null;
+            }
         }
     }
 
@@ -202,6 +269,15 @@ public class Chunk : MonoBehaviour
         return new Vector3(worldX, chunkPosition.y, worldZ);
     }
 
+    public void ApplyTickToBuildings()
+    {
+        foreach (var building in chunkBuildings)
+        {
+            if(building.obj.GetComponent<IBuilding>() != null)
+                building.obj.GetComponent<IBuilding>().Tick();
+        }
+    }
+    
     private void OnDrawGizmos()
     {
         float cellSpacing = CHUNK_SIZE / CHUNK_CELL_SIZE;

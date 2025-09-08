@@ -1497,7 +1497,7 @@
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
     "m_AlphaMode": 0,
-    "m_RenderFace": 0,
+    "m_RenderFace": 2,
     "m_AlphaClip": false,
     "m_CastShadows": false,
     "m_ReceiveShadows": true,
@@ -3889,8 +3889,8 @@
     "m_ObjectId": "567d5d6890ee479496f6787bfe55d986",
     "m_Title": "Strenght",
     "m_Position": {
-        "x": -1978.0,
-        "y": 496.9999694824219
+        "x": -1978.0001220703125,
+        "y": 497.0000915527344
     }
 }
 
@@ -4428,8 +4428,8 @@
     "m_ObjectId": "6ffef5fe6e71476db7622701e5a85dd0",
     "m_Title": "Grass Alpha",
     "m_Position": {
-        "x": -1012.9998779296875,
-        "y": 298.0
+        "x": -1013.0,
+        "y": 298.0000305175781
     }
 }
 
@@ -5196,8 +5196,8 @@
     "m_ObjectId": "8ac45969c4c6402fbf9b3280ee1986dd",
     "m_Title": "Random value",
     "m_Position": {
-        "x": -2869.0,
-        "y": 582.0
+        "x": -2869.000244140625,
+        "y": 582.0000610351563
     }
 }
 
