@@ -65,12 +65,24 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 9d445a214eeb7db4e8c02f9d63459f4a, type: 3}
-      propertyPath: 'm_Materials.Array.data[1]'
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 22623044d130fd54dab75650f768f1ca, type: 2}
+    - target: {fileID: -7511558181221131132, guid: 9d445a214eeb7db4e8c02f9d63459f4a, type: 3}
+      propertyPath: 'm_Materials.Array.data[1]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 5884e35899af57f408028375358c6099, type: 2}
+    - target: {fileID: -5754084199372789682, guid: 9d445a214eeb7db4e8c02f9d63459f4a, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -7681513528253052755, guid: e0f1c257d3117e046be713a15e179267, type: 3}
+    - target: {fileID: -1461304994638716399, guid: 9d445a214eeb7db4e8c02f9d63459f4a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 2c9d2fc606eb15c4d802ac6da06ff01f, type: 3}
     - target: {fileID: 919132149155446097, guid: 9d445a214eeb7db4e8c02f9d63459f4a, type: 3}
       propertyPath: m_Name
-      value: Conveyor
+      value: Building_Conveyor
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

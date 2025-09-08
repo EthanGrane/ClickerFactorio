@@ -39,7 +39,9 @@ public class PlayerBuilding : MonoBehaviour
         
         // ***** Build ***** 
         if (Input.GetMouseButton(0))
+        {
             Build(currentBuilding);
+        }       
         
         // ***** Rotate ***** 
         if (Input.GetAxis("Mouse ScrollWheel") > 0f)
@@ -102,14 +104,14 @@ public class PlayerBuilding : MonoBehaviour
     public void HideAllBuildingGhost()
     {
         foreach (GameObject ghostObject in ghostObjects)
-        {
-            if(ghostObject != null)
+            if(ghostObject)
                 ghostObject.SetActive(false);
-        }
     }
 
     void Build(CellObject building)
     {
+        HideAllBuildingGhost();
+
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5))
         {
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
@@ -119,16 +121,21 @@ public class PlayerBuilding : MonoBehaviour
             if(iBuildPos == -Vector2Int.one)
                 iBuildPos = cellPosition;
 
+            int currentMoney = GameManager.Instance.GetPlayerMoney();
+            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildValue;
+            
             if (IsSnappedPosition(cellPosition))
             {
-                print($"CellPosition: {cellPosition}");
-                print($"Hit position: {hit.point}");
-                print($"GetPlacementWorldPosition: {Chunk.GetPlacementWorldPosition(cellPosition, building.size,chunk.transform.position ,building.rotation)}");
-                
-                building.rotation = buildingRotation;
-                var placed = chunk.PlaceCellObject(cellPosition, building);
-                if (placed != null)
-                    lastObjectsBuilded.Add(placed);
+                if (currentMoney >= buildingCost)
+                {
+                    building.rotation = buildingRotation;
+                    var placed = chunk.PlaceCellObject(cellPosition, building);
+                    if (placed != null)
+                    {
+                        GameManager.Instance.AddMoney(-buildingCost);
+                        lastObjectsBuilded.Add(placed);
+                    }
+                }
             }
         }
     }
@@ -152,12 +159,15 @@ public class PlayerBuilding : MonoBehaviour
 
     void ShowBuildingGhost(CellObject building)
     {
-        HideAllBuildingGhost();
-
+        if(!building.prefab)
+            return;
+        
         if (!ghostObjects[currentInventoryIndex])
         {
             ghostObjects[currentInventoryIndex] = Instantiate(building.prefab).gameObject;
-            ghostObjects[currentInventoryIndex].GetComponent<Collider>().enabled = false;
+            
+            if(ghostObjects[currentInventoryIndex].GetComponent<Collider>())
+                ghostObjects[currentInventoryIndex].GetComponent<Collider>().enabled = false;
         }
 
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5))
@@ -174,7 +184,14 @@ public class PlayerBuilding : MonoBehaviour
             ghostObjects[currentInventoryIndex].transform.position = placement + Vector3.up * 0.01f;
             ghostObjects[currentInventoryIndex].transform.rotation = Quaternion.Euler(0, building.rotation * 90, 0);
 
-            bool canPlace = chunk.CanPlaceCellObject(cellPosition, building.size);
+            bool canPlace = chunk.CanPlaceCellObject(cellPosition, building.size, building.rotation);
+            
+            int currentMoney = GameManager.Instance.GetPlayerMoney();
+            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildValue;
+            
+            if(currentMoney < buildingCost)
+                canPlace = false;
+            
             ghostObjects[currentInventoryIndex].GetComponent<MeshRenderer>().material = canPlace ? ghostMaterial : obstructedMaterial;
         }
         else

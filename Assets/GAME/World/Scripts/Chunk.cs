@@ -76,24 +76,22 @@ public class Chunk : MonoBehaviour
 
     // Verifica si se puede colocar un objeto de tamaño `size` en `cellPos`
     // Coloca un objeto en la grid y lo instancia en el mundo (versión simple)
-    public CellObject PlaceCellObject(Vector2Int pivot, CellObject template)
+    public CellObject PlaceCellObject(Vector2Int pivot, CellObject building)
     {
-        CellObject objData = new CellObject(template);
+        CellObject objData = new CellObject(building);
         int size = objData.size; // Asumimos que siempre es cuadrado
 
-        bool canPlace = CanPlaceCellObject(pivot, size);
+        bool canPlace = CanPlaceCellObject(pivot, size, building.rotation);
         if (!canPlace) return null;
         
         // Instancia el objeto en el mundo
         GameObject go = Instantiate(objData.prefab);
 
         // Calcula posición centrada sobre el bloque de celdas
-        float cellSpacing = CHUNK_SIZE / CHUNK_CELL_SIZE;
-        Vector3 centerOffset = new Vector3(size * 0.5f * cellSpacing, 0, size * 0.5f * cellSpacing);
-        Vector3 basePos = GetCellWorldPosition(pivot);
-        go.transform.position = basePos + (centerOffset - new Vector3(cellSpacing * 0.5f, 0, cellSpacing * 0.5f));
+        Vector3 placementPosition = GetPlacementWorldPosition(pivot, building.size, transform.position, building.rotation);
+        go.transform.position = placementPosition;
 
-        go.transform.rotation = Quaternion.identity;
+        go.transform.rotation = Quaternion.Euler(Vector3.up * (90f * building.rotation));
         go.transform.SetParent(transform);
 
         // Inicializa la data
@@ -103,30 +101,47 @@ public class Chunk : MonoBehaviour
         for (int x = 0; x < size; x++)
         for (int z = 0; z < size; z++)
         {
-            int cx = pivot.x + x;
-            int cz = pivot.y + z;
+            int cx = pivot.x;
+            int cz = pivot.y;
+
+            switch(building.rotation % 4)
+            {
+                case 0: cx += x; cz += z; break;                    // 0°
+                case 1: cx += z; cz += (size - 1 - x); break;      // 90°
+                case 2: cx += (size - 1 - x); cz += (size - 1 - z); break; // 180°
+                case 3: cx += (size - 1 - z); cz += x; break;      // 270°
+            }
+
             cellData[cx, cz] = objData;
         }
 
         return objData;
     }
 
-    public bool CanPlaceCellObject(Vector2Int pivot, int size)
+    public bool CanPlaceCellObject(Vector2Int pivot, int size, int rotation)
     {
-        // Verifica que todas las celdas necesarias estén dentro del chunk y libres
         for (int x = 0; x < size; x++)
         for (int z = 0; z < size; z++)
         {
-            int cx = pivot.x + x;
-            int cz = pivot.y + z;
+            int cx = pivot.x;
+            int cz = pivot.y;
+
+            switch(rotation % 4)
+            {
+                case 0: cx += x; cz += z; break;
+                case 1: cx += z; cz += (size - 1 - x); break;
+                case 2: cx += (size - 1 - x); cz += (size - 1 - z); break;
+                case 3: cx += (size - 1 - z); cz += x; break;
+            }
 
             if (cx < 0 || cx >= CHUNK_CELL_SIZE || cz < 0 || cz >= CHUNK_CELL_SIZE)
-                return false; // fuera del chunk
+                return false;
+
             if (cellData[cx, cz] != null)
-                return false; // ya ocupada
+                return false;
         }
 
-        return true; // todas las celdas están libres
+        return true;
     }
 
     public static int GetRotatedSize(int size, int rotation)
@@ -177,34 +192,12 @@ public class Chunk : MonoBehaviour
     public static Vector3 GetPlacementWorldPosition(Vector2Int pivotCell, int size, Vector3 chunkPosition, int rotation = 0)
     {
         float cellSpacing = Chunk.CHUNK_SIZE / Chunk.CHUNK_CELL_SIZE;
-        int rotatedSize = GetRotatedSize(size, rotation);
+        Vector3 center = chunkPosition;
 
-        // Calculamos offset respecto al pivot
-        int offsetX = 0;
-        int offsetZ = 0;
+        Vector3 offset = new Vector3(size * 0.5f * cellSpacing, 0, size * 0.5f * cellSpacing);
 
-        switch(rotation % 4)
-        {
-            case 0: // 0° 
-                offsetX = 0;
-                offsetZ = 0;
-                break;
-            case 1: // 90° 
-                offsetX = 0;
-                offsetZ = -(rotatedSize - 1);
-                break;
-            case 2: // 180°
-                offsetX = -(rotatedSize - 1);
-                offsetZ = -(rotatedSize - 1);
-                break;
-            case 3: // 270°
-                offsetX = -(rotatedSize - 1);
-                offsetZ = 0;
-                break;
-        }
-
-        float worldX = (pivotCell.x + offsetX + rotatedSize * 0.5f) * cellSpacing + chunkPosition.x - Chunk.CHUNK_SIZE / 2f;
-        float worldZ = (pivotCell.y + offsetZ + rotatedSize * 0.5f) * cellSpacing + chunkPosition.z - Chunk.CHUNK_SIZE / 2f;
+        float worldX = pivotCell.x * cellSpacing + center.x - Chunk.CHUNK_SIZE/2 + offset.x;
+        float worldZ = pivotCell.y * cellSpacing + center.z - Chunk.CHUNK_SIZE/2 + offset.z;
 
         return new Vector3(worldX, chunkPosition.y, worldZ);
     }

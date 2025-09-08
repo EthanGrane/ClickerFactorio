@@ -6,6 +6,7 @@ using DG.Tweening;
 public class ResourceMaterial : MonoBehaviour
 {
     public int resourceHealth = 100;
+    public int resourceValue = 1;
     
     ParticleSystem ps;
     Material material;
@@ -23,26 +24,27 @@ public class ResourceMaterial : MonoBehaviour
     public void HarvestMaterial(int damage)
     {
         resourceHealth -= damage;
+        GameManager.Instance.AddMoney(resourceValue * damage);
+        
         if (ps)
         {
             ps.Play();
         }
         
-        if (shineTweener == null)
+        if (shineTweener != null)
         {
-            shineTweener = DOTween.Sequence();
-            
-            // Blink del shine (0 -> 1 -> 0)
-            shineTweener.Join(
-                DOTween.Sequence()
-                    .Append(material.DOFloat(1, "_Shine", 0.05f).SetEase(Ease.InQuad))
-                    .Append(material.DOFloat(0, "_Shine", 0.05f).SetEase(Ease.Linear))
-            );
-
-            shineTweener.SetAutoKill(false);
-            shineTweener.Pause();
-            shineTweener.onComplete = () => { shineTweener = null; };
+            shineTweener.Kill();
+            shineTweener = null;
         }
+
+        shineTweener = DOTween.Sequence()
+            .Append(material.DOFloat(1, "_Shine", 0.05f).SetEase(Ease.InQuad))
+            .Append(material.DOFloat(0, "_Shine", 0.05f).SetEase(Ease.Linear))
+            .SetAutoKill(false)
+            .OnComplete(() => shineTweener = null);
+
+        shineTweener.Restart();
+
 
         shineTweener.Restart(); 
     }
