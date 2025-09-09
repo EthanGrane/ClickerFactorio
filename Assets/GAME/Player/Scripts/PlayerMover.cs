@@ -35,8 +35,27 @@ public class PlayerMover : MonoBehaviour
         HandleGroundCheck();
         HandleMovement();
         HandleMouseLook();
+        HandleCursor();
     }
 
+    void HandleCursor()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true; // mostrar al desbloquear
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false; // ocultar al bloquear
+            }
+        }
+    }
+
+    
     void HandleGroundCheck()
     {
         // sphere check para detectar suelo

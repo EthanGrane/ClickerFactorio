@@ -28,7 +28,7 @@ public class ResourceMaterial : MonoBehaviour
         GameManager.Instance.AddMoney(resourceValue * damage);
 
         AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)
-            .Volume(0.5f)
+            .Volume(1f)
             .PitchVariation(0.25f)
             .MaxDistance(100f)
             .Play();

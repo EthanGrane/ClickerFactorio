@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 386e16229dca1224781672f35c5516c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceHealth: 100
+  resourceHealth: 1000
   resourceValue: 1
   hitSound: HitHighPitch
 --- !u!136 &3572104708885221299

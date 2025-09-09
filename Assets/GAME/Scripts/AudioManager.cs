@@ -38,6 +38,11 @@ public class AudioManager : MonoBehaviour
         AudioClip clip = clips.Find(c => c.name == clipName);
         return new SoundInstance(clip, false);
     }
+    
+    public SoundInstance PlayOneShot2D(AudioClip clip)
+    {
+        return new SoundInstance(clip, false);
+    }
 
     public SoundInstance PlayOneShot3D(string clipName, Vector3 position)
     {

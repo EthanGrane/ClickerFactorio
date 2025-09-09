@@ -920,6 +920,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 610164695}
   m_CullTransparentMesh: 1
+--- !u!1 &719302257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 719302259}
+  - component: {fileID: 719302258}
+  m_Layer: 0
+  m_Name: ModMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &719302258
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719302257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6dc7548b8d5ee4287bb6eba5d95c0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &719302259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719302257}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2315,26 +2359,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1714613029760020129, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: harvestSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 1637adc4a3e19f342ad2bd0ef43086d5, type: 3}
-    - target: {fileID: 1714613029760020129, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: harvestSoundUp
-      value: 
-      objectReference: {fileID: 8300000, guid: c625d048ea118f6439c044fc0bd56362, type: 3}
-    - target: {fileID: 1714613029760020129, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: clickUpHarvestSound
-      value: 
-      objectReference: {fileID: 8300000, guid: a8c75246fcee5dd408f5fc493572ce27, type: 3}
-    - target: {fileID: 1714613029760020129, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: clickDownHarvestSound
-      value: 
-      objectReference: {fileID: 8300000, guid: f7f6a6c7c939896428a2b1d7eb0b0274, type: 3}
     - target: {fileID: 2842785177486090324, guid: fc59162522a68674d93815b8814bb777, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3582892973308796982, guid: fc59162522a68674d93815b8814bb777, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: -876546973899608171, guid: 62efa505db612114ab013937d6852ec5, type: 3}
     - target: {fileID: 6167589454967766712, guid: fc59162522a68674d93815b8814bb777, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2375,54 +2407,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].type
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[1].size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].prefab
-      value: 
-      objectReference: {fileID: 2738694717052441456, guid: 9e4cf0b2af323e24d8f2c25a58bbc4b7, type: 3}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].size.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[1].prefab
-      value: 
-      objectReference: {fileID: 1096074456737648413, guid: f425d5f0402fbbf46bd8c228a27847b3, type: 3}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[1].size.x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[1].size.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[0].BuildValue
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: inventoryBuildingObjects.Array.data[1].BuildValue
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 8800872350043332166, guid: fc59162522a68674d93815b8814bb777, type: 3}
-      propertyPath: m_Name
-      value: Harvest Audio Source
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2441,3 +2425,4 @@ SceneRoots:
   - {fileID: 393761398}
   - {fileID: 1103141004}
   - {fileID: 1735811522}
+  - {fileID: 719302259}

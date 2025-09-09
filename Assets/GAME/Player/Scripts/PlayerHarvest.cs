@@ -9,41 +9,35 @@ public class PlayerHarvest : MonoBehaviour
     public float harvestDistance = 5;
     public LayerMask ResourceLayerMask;
     
-    private AudioSource harvestAudioSource;
     public AudioClip harvestSound;
     public AudioClip harvestSoundUp;
 
     ResourceMaterial lastResourceMaterial = null;
-    
-    private void Awake()
-    {
-        harvestAudioSource = gameObject.AddComponent<AudioSource>();
-    }
 
     public void HandleHarvest()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            AudioManager.Instance.PlayOneShot2D(harvestSound).Volume(0.1f).PitchVariation(0.05f).Play();
+
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, harvestDistance))
             {
                 if (hit.transform.GetComponent<ResourceMaterial>())
                 {
                     hit.transform.GetComponent<ResourceMaterial>().HarvestMaterial(Mathf.FloorToInt(harvestDamage));
-                    
-                    harvestAudioSource.pitch = Random.Range(0.9f, 1.1f);
-                    harvestAudioSource.PlayOneShot(harvestSound);
+
                     lastResourceMaterial = hit.transform.GetComponent<ResourceMaterial>();
                 }
             }
         }
 
-        if (lastResourceMaterial)
+        if (Input.GetMouseButtonUp(0))
         {
-            if (Input.GetMouseButtonUp(0))
+            AudioManager.Instance.PlayOneShot2D(harvestSoundUp).Volume(0.1f).PitchVariation(0.05f).Play();
+            if (lastResourceMaterial)
             {
                 lastResourceMaterial.BounceObject();
 
-                harvestAudioSource.PlayOneShot(harvestSoundUp);
                 lastResourceMaterial = null;
             }
         }
