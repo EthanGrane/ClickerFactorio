@@ -106,7 +106,7 @@ public class Chunk : MonoBehaviour
         go.transform.SetParent(transform);
 
         // Inicializa la data
-        objData.Initialize(chunk: this, obj: go, position: pivot, rotation: 0);
+        objData.Initialize(chunk: this, obj: go, position: pivot, rotation: building.rotation);
         go.name = $"{objData.prefab.name} ({pivot.x}, {pivot.y})";
         
         // Marca todas las celdas que ocupa como ocupadas
@@ -202,10 +202,12 @@ public class Chunk : MonoBehaviour
         return size; // 0° o 180°
     }
 
-    public void RemoveCellBuilding(Vector2Int cellPos)
+    public CellObject RemoveCellBuilding(Vector2Int cellPos)
     {
         CellObject removeObject = cellData[cellPos.x, cellPos.y];
-        if(removeObject == null) return;
+        if(removeObject == null) return null;
+
+        removeObject.Destroy();
         
         if (removeObject.type == CellType.Building)
         {
@@ -231,6 +233,8 @@ public class Chunk : MonoBehaviour
                 cellData[cx, cz] = null;
             }
         }
+        
+        return removeObject;
     }
 
     // Convierte posición del mundo a coordenadas de celda

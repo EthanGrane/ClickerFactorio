@@ -10,6 +10,10 @@ public class PlayerSway : MonoBehaviour
     public float maxSway = 0.25f; // máximo movimiento por MouseX/MouseY
     public float moveSway = 0.1f; // máximo movimiento por WASD/Space
 
+    [Header("Sound")]
+    public AudioClip mouseDownClip;
+    public AudioClip mouseUpClip;
+    
     [Header("Click Push")]
     public float pushStrength = 0.3f;
 
@@ -60,6 +64,8 @@ public class PlayerSway : MonoBehaviour
         // --- CLICK PUSH ---
         if (Input.GetMouseButtonDown(0))
         {
+            AudioManager.Instance.PlayOneShot2D(mouseDownClip).Volume(0.1f).PitchVariation(0.05f).Play();
+
             velocity += transform.InverseTransformDirection(cam.forward) * pushStrength;
             if (scaleTween == null)
             {
@@ -77,6 +83,9 @@ public class PlayerSway : MonoBehaviour
             }
             scaleTween.Restart();
         }
+        
+        if(Input.GetMouseButtonUp(0))
+            AudioManager.Instance.PlayOneShot2D(mouseUpClip).Volume(0.1f).PitchVariation(0.05f).Play();
 
         // --- ROTACIÓN SUAVE ---
         transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.identity, Time.deltaTime * 5f);

@@ -129,7 +129,7 @@ public class PlayerBuilding : MonoBehaviour
                 if (currentMoney >= buildingCost)
                 {
                     building.rotation = buildingRotation;
-                    var placed = chunk.PlaceCellObject(cellPosition, building);
+                    CellObject placed = chunk.PlaceCellObject(cellPosition, building);
                     if (placed != null)
                     {
                         GameManager.Instance.AddMoney(-buildingCost);

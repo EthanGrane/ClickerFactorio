@@ -121,6 +121,10 @@ MonoBehaviour:
   obstructedMaterial: {fileID: 2100000, guid: 2f8215d6dfc7ba54a96ad40299ccad0f, type: 2}
   worldGridMaterial: {fileID: 2100000, guid: 116d3d7179aa85d47a32c3a312f48b72, type: 2}
   inventoryBuildingObjects:
+  - prefab: {fileID: 0}
+    size: 0
+    rotation: 0
+    BuildValue: 0
   - prefab: {fileID: 2738694717052441456, guid: 9e4cf0b2af323e24d8f2c25a58bbc4b7, type: 3}
     size: 1
     rotation: 0
@@ -129,10 +133,6 @@ MonoBehaviour:
     size: 2
     rotation: 0
     BuildValue: 50
-  - prefab: {fileID: 0}
-    size: 0
-    rotation: 0
-    BuildValue: 0
   - prefab: {fileID: 0}
     size: 0
     rotation: 0
@@ -230,7 +230,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: -876546973899608171, guid: 62efa505db612114ab013937d6852ec5, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -279,7 +279,7 @@ MonoBehaviour:
   damping: 20
   maxSway: 0.1
   moveSway: 0.1
-  pushStrength: 1
+  pushStrength: 2
 --- !u!1 &7279759479314754240
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,37 +310,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6167589454967766712}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7658928809722056833
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4435631325183842600}
-  m_Layer: 6
-  m_Name: RestPos
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4435631325183842600
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7658928809722056833}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.037656758, y: -0.9412688, z: -0.11206719, w: 0.31628463}
-  m_LocalPosition: {x: 0.25000003, y: -0.1, z: 0.32999995}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 8059491997607642298}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &8036929484750072648
 PrefabInstance:
@@ -450,9 +419,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 23073860268453874, guid: 01e08946dfd05a14abaf140defb0091b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8651157384159126617}
-    - targetCorrespondingSourceObject: {fileID: 23073860268453874, guid: 01e08946dfd05a14abaf140defb0091b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4435631325183842600}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01e08946dfd05a14abaf140defb0091b, type: 3}
 --- !u!4 &8059491997607642298 stripped

@@ -12,6 +12,8 @@ public class CellObject
     public CellType type;            // "Resource", "Building", etc.
     public int rotation;           // múltiplo de 90
     
+    public event Action<CellObject> OnDestroy;
+    
     public CellObject(CellObject other)
     {
         this.prefab   = other.prefab;
@@ -36,6 +38,11 @@ public class CellObject
         this.rotation = rotation;
         
         RotateObject(rotation);
+    }
+
+    public void Destroy()
+    {
+        OnDestroy?.Invoke(this);
     }
     
     public void RotateObject(int rotation)

@@ -1,15 +1,17 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MiningDrillBuilding : MonoBehaviour, IBuilding
 {
+    public event Action<CellObject> OnDestroy;
+
     public int ticksForInteract = 4;
     private int currentTicks = 0;
 
     public List<CellObject> affectedObjects;
     CellObject cellObject = null;
-
-    // Se llama al colocar el objeto en el mundo
+    
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
