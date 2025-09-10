@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d1e9d32be38ba143972bd9afcd9426b, type: 3}
+  m_Name: FactorioClicker
+  m_EditorClassIdentifier: 
+  tasks:
+  - taskName: Caja de inventario
+    tag: 0
+    notes: 'Objetivo: El conveyor busque por IInventory y saque los items de la caja,
+      y luego que pueda volver a meterlos dentro.'

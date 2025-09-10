@@ -1,8 +1,4 @@
-using System;
-using Mono.Cecil;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Random = UnityEngine.Random;
 
 public class PlayerHarvest : MonoBehaviour
 {
