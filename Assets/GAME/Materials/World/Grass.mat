@@ -114,7 +114,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _GrassDensity: 0.793
+    - _GrassDensity: 0.837
     - _GrassHeight: 0.001
     - _Metallic: 0
     - _Mode: 0
@@ -123,8 +123,8 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Resolution: 16
-    - _Size: 25
+    - _Resolution: 1024
+    - _Size: 50
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
@@ -133,15 +133,15 @@ Material:
     - _Surface: 0
     - _UVSec: 0
     - _WindFrequency: 0.15
-    - _WindStrenght: 0.31
+    - _WindStrenght: 0.228
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 0.045671605, g: 0.630359, b: 0.13251069, a: 1}
     - _Color: {r: 0.45403457, g: 0.8207547, b: 0, a: 1}
-    - _DarkColor: {r: 0.44313726, g: 0.7921569, b: 0, a: 1}
+    - _DarkColor: {r: 0.369419, g: 0.6603774, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
-    - _LightColor: {r: 0.654902, g: 1, b: 0, a: 1}
+    - _LightColor: {r: 0.58521426, g: 1, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _WindDirection: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []

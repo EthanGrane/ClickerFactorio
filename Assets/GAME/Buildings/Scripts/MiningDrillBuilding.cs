@@ -2,19 +2,29 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MiningDrillBuilding : MonoBehaviour, IBuilding
+public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
 {
     public event Action<CellObject> OnDestroy;
 
     public int ticksForInteract = 4;
-    private int currentTicks = 0;
-
+    public Inventory inventory;
     public List<CellObject> affectedObjects;
+    
+    [Header("Visuals")]
+    public ParticleSystem ps;
+    
+    private int currentTicks = 0;
     CellObject cellObject = null;
     
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
+        inventory = new Inventory(2, 16);
+    }
+
+    public CellObject GetCellObject()
+    {
+        return cellObject;
     }
 
     private void SetupAffectedObjects()
@@ -79,8 +89,27 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding
             {
                 if (cell.type == CellType.Resource)
                 {
-                    cell.obj.GetComponent<ResourceMaterial>().HarvestMaterial(1);
-                    cell.obj.GetComponent<ResourceMaterial>().BounceObject();
+                    ResourceMaterial harvestMaterial = cell.obj.GetComponent<ResourceMaterial>();
+                    if (harvestMaterial)
+                    {
+                        // Is inventory NOT full?
+                        // Is item Avaliable on inventory slots?
+                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceItem))
+                        {
+                            if(!ps.isPlaying)
+                                ps.Play();
+                            
+                            harvestMaterial.HarvestMaterial(1);
+                            harvestMaterial.BounceObject();
+                            inventory.AddItemToInventory(harvestMaterial.resourceItem);
+                        }
+                        else
+                        {
+                            if(ps.isPlaying)
+                                ps.Stop();
+                        }
+                    }
+
                 }
             }
         }
@@ -115,8 +144,10 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(worldPosL + Vector3.up * 0.5f, Vector3.one * 0.25f);
         Gizmos.DrawWireCube(worldPosR + Vector3.up * 0.5f, Vector3.one * 0.25f);
+    }
 
-        Debug.Log($"Gizmos worldPosL: {worldPosL}");
-        Debug.Log($"Gizmos worldPosR: {worldPosR}");
+    public Inventory GetInventory()
+    {
+        return inventory;
     }
 }

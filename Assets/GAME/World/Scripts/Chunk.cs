@@ -277,7 +277,7 @@ public class Chunk : MonoBehaviour
     {
         foreach (var building in chunkBuildings)
         {
-            if(building.obj.GetComponent<IBuilding>() != null)
+            if(building.obj.GetComponent<IBuilding>().GetCellObject() != null)
                 building.obj.GetComponent<IBuilding>().Tick();
         }
     }

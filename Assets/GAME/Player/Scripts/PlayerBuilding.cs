@@ -9,6 +9,7 @@ public class PlayerBuilding : MonoBehaviour
     public Material ghostMaterial;
     public Material obstructedMaterial;
     public Material worldGridMaterial;
+    public LayerMask chunkLayerMask;
     
     public BuildingObject[] inventoryBuildingObjects = new BuildingObject[10];
     GameObject[] ghostObjects = new GameObject[10];
@@ -69,18 +70,21 @@ public class PlayerBuilding : MonoBehaviour
             {
                 if (i < inventoryBuildingObjects.Length)
                 {
-                    if (i == 9)
-                        ChangeCurrentBuilding(inventoryBuildingObjects[i]);
-                    else
-                        currentBuilding = new CellObject(inventoryBuildingObjects[i]);
-
-                    currentInventoryIndex = i;
+                    currentInventoryIndex = i - 1;
+                    
+                    if(currentInventoryIndex < 0)
+                        currentInventoryIndex = 0;
+                    if (currentInventoryIndex >= 9)
+                        currentInventoryIndex = 9;
+                    
+                    ChangeCurrentBuilding(inventoryBuildingObjects[currentInventoryIndex]);
                 }
             }
         }
     }
     public void ChangeCurrentBuilding(BuildingObject newBuilding)
     {
+        HideAllBuildingGhost();
         currentBuilding = new CellObject(newBuilding);
     }
 
@@ -112,10 +116,12 @@ public class PlayerBuilding : MonoBehaviour
     {
         HideAllBuildingGhost();
 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, chunkLayerMask))
         {
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
             Vector2Int cellPosition = chunk.GetCellCoords(hit.point);
+            
+            if(!chunk) return;
 
             // Snap to same XZ direction
             if(iBuildPos == -Vector2Int.one)
@@ -142,7 +148,7 @@ public class PlayerBuilding : MonoBehaviour
 
     void RemoveBuilding()
     {
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, chunkLayerMask))
         {
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
             Vector2Int cellPosition = chunk.GetCellCoords(hit.point);
@@ -170,12 +176,15 @@ public class PlayerBuilding : MonoBehaviour
                 ghostObjects[currentInventoryIndex].GetComponent<Collider>().enabled = false;
         }
 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, chunkLayerMask))
         {
             if (!ghostObjects[currentInventoryIndex].activeSelf)
                 ghostObjects[currentInventoryIndex].SetActive(true);
 
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
+            
+            if(!chunk) return;
+            
             Vector2Int cellPosition = chunk.GetCellCoords(hit.point);
             building.rotation = buildingRotation;
 

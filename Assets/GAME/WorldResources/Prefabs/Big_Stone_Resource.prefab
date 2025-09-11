@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceHealth: 1000
-  resourceValue: 1
+  resourceItem: {fileID: 11400000, guid: b48dae7eebfddef4491d73497419b9df, type: 2}
   hitSound: HitHighPitch
 --- !u!136 &3572104708885221299
 CapsuleCollider:

@@ -2,11 +2,12 @@ using System;
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.Serialization;
 
 public class ResourceMaterial : MonoBehaviour
 {
     public int resourceHealth = 100;
-    public int resourceValue = 1;
+    [FormerlySerializedAs("requiredItem")] public Item resourceItem;
     public string hitSound;
     
     ParticleSystem ps;
@@ -25,7 +26,7 @@ public class ResourceMaterial : MonoBehaviour
     public void HarvestMaterial(int damage)
     {
         resourceHealth -= damage;
-        GameManager.Instance.AddMoney(resourceValue * damage);
+        GameManager.Instance.AddMoney(resourceItem.itemValue * damage);
 
         AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)
             .Volume(1f)

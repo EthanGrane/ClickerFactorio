@@ -1,8 +1,7 @@
-using System;
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using UnityEngine.Rendering;
 
 namespace ToDo_CodeTrigger
 {
@@ -28,7 +27,6 @@ namespace ToDo_CodeTrigger
         [TextArea(1, 3)] public string notes;
     }
 
-#if UNITY_EDITOR
     [CustomEditor(typeof(ToDo_SO))]
     public class ToDo_SOEditor : Editor
     {
@@ -163,5 +161,5 @@ namespace ToDo_CodeTrigger
 }
 
     }
-#endif
 }
+#endif

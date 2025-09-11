@@ -55,9 +55,12 @@
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />
     <Compile Include="Assets\GAME\Scripts\AudioManager.cs" />
     <Compile Include="Assets\GAME\Scripts\UI\PlayerMoneyUI.cs" />
+    <Compile Include="Assets\GAME\Buildings\Scripts\CrateBuilding.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\CellObject.cs" />
+    <Compile Include="Assets\GAME\Buildings\Scripts\Inventory.cs" />
+    <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
     <Compile Include="Assets\GAME\World\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\ConveyorBuilding.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMouse\PlayerMouse.cs" />

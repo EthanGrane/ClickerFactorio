@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tasks:
   - taskName: Caja de inventario
-    tag: 0
+    tag: 1
     notes: 'Objetivo: El conveyor busque por IInventory y saque los items de la caja,
       y luego que pueda volver a meterlos dentro.'
