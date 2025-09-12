@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,100 +9,86 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
     [Space]
     public CellObject[] inputCellObjects = new CellObject[3];
     public CellObject outputCellObject;
-    
-    [FormerlySerializedAs("plannedInputItem")] public ResourceItem plannedInputResourceItem = null;
-    public CellObject plannedInputCellObject = null;
-    [FormerlySerializedAs("plannedOutputItem")] public ResourceItem plannedOutputResourceItem = null;
-    
+
+    // Colas para planificar movimiento
+    private Queue<ResourceItem> plannedInputItems = new Queue<ResourceItem>();
+    private Queue<ResourceItem> plannedOutputItems = new Queue<ResourceItem>();
+    private Queue<CellObject> plannedInputSources = new Queue<CellObject>();
+
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
-        // Un conveyor simultaneamente solo puede tener un objeto
         inventory = new Inventory(1, 1);
-        
+
         for (int i = 0; i < inputCellObjects.Length; i++)
             inputCellObjects[i] = null;
         outputCellObject = null;
     }
-    
-    public CellObject GetCellObject()
-    {
-        return cellObject;
-    }
+
+    public CellObject GetCellObject() => cellObject;
 
     public void PlanTick()
     {
         CheckNeighbor();
-        
-        // Input
-        if (!inventory.isInventoryFull())
-        {
-            for (int i = 0; i < inputCellObjects.Length; i++)
-            {
-                if (inputCellObjects[i] != null)
-                {
-                    Inventory inputInv = inputCellObjects[i].obj.GetComponent<IInventory>().GetInventory();
-                    ResourceItem resourceItem = inputInv.PeekItemFromInventory();
-                    if (resourceItem != null)
-                    {
-                        plannedInputResourceItem = resourceItem;
-                        plannedInputCellObject = inputCellObjects[i];
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // Output
-        if (outputCellObject != null && !inventory.isInventoryEmpty())
+
+        // 1. Planificar salida primero (vaciar el conveyor)
+        if (outputCellObject != null)
         {
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
-            if (!outputInv.isInventoryFull())
+            while (!inventory.isInventoryEmpty() && !outputInv.isInventoryFull())
             {
-                plannedOutputResourceItem = inventory.PeekItemFromInventory();
+                ResourceItem item = inventory.DequeueItemFromInventory();
+                plannedOutputItems.Enqueue(item);
             }
-        }    
+        }
+
+        // 2. Planificar entrada desde todos los inputs
+        for (int i = 0; i < inputCellObjects.Length; i++)
+        {
+            var input = inputCellObjects[i];
+            if (input == null) continue;
+
+            Inventory inputInv = input.obj.GetComponent<IInventory>().GetInventory();
+            while (!inventory.isInventoryFull() && !inputInv.isInventoryEmpty())
+            {
+                ResourceItem item = inputInv.DequeueItemFromInventory();
+                plannedInputItems.Enqueue(item);
+            }
+        }
     }
-    
+
     public void ActionTick()
     {
-        // Entrada: coger realmente el resourceItem
-        if (plannedInputResourceItem != null && !inventory.isInventoryFull())
+        // Ejecutar entrada (llenar el conveyor desde la cola planificada)
+        while (plannedInputItems.Count > 0 && !inventory.isInventoryFull())
         {
-            Inventory inputInv = plannedInputCellObject.obj.GetComponent<IInventory>().GetInventory(); // suponiendo que ResourceItem o Inventory guarda referencia
-            ResourceItem resourceItem = inputInv.DequeueItemFromInventory();
-            if (resourceItem != null) inventory.AddItemToInventory(resourceItem);
+            ResourceItem item = plannedInputItems.Dequeue();
+            inventory.AddItemToInventory(item);
         }
 
-        // En PlanAction para la salida
-        if (plannedOutputResourceItem != null && !inventory.isInventoryEmpty())
+        // Ejecutar salida (mover hacia el siguiente)
+        while (plannedOutputItems.Count > 0)
         {
+            ResourceItem item = plannedOutputItems.Dequeue();
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
-            ResourceItem resourceItem = inventory.DequeueItemFromInventory();
-            if (resourceItem != null) outputInv.AddItemToInventory(resourceItem);
+            if (!outputInv.isInventoryFull())
+                outputInv.AddItemToInventory(item);
+            else
+                break; // Si no hay espacio, detenemos
         }
-
-        plannedInputResourceItem = null;
-        plannedInputCellObject = null;
-        plannedOutputResourceItem = null;
     }
-    
+
+
     public void CheckNeighbor()
     {
         if (outputCellObject == null)
         {
             // -- OUTPUT --
             CellObject fwd = GetCellObjectFromDirection(cellObject.GetForwardDir());
-            if (fwd != null)
+            if (fwd != null && fwd.obj.GetComponent<IInventory>() != null)
             {
-                if (fwd.obj.GetComponent<IInventory>() != null)
-                {
-                    outputCellObject = fwd;
-                    outputCellObject.OnDestroy += (CellObject o) =>
-                    {
-                        outputCellObject = null;
-                    };
-                }
+                outputCellObject = fwd;
+                outputCellObject.OnDestroy += (CellObject o) => outputCellObject = null;
             }
         }
 
@@ -112,51 +97,38 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
         {
             -cellObject.GetForwardDir(),
             cellObject.GetRightDir(),
-            -cellObject.GetRightDir(),
+            -cellObject.GetRightDir()
         };
+
         for (int i = 0; i < directions.Length; i++)
         {
-            CellObject inputCellObject = GetCellObjectFromDirection(directions[i]);
-            if (inputCellObject != null)
+            CellObject inputCell = GetCellObjectFromDirection(directions[i]);
+            if (inputCell != null && inputCell.obj.GetComponent<IInventory>() != null)
             {
-                if (inputCellObject.obj.GetComponent<IInventory>() != null)
-                {
-                    if (inputCellObjects != null)
-                    {
-                        inputCellObjects[i] = inputCellObject;
-                        int index = i;
-                        inputCellObjects[i].OnDestroy += (CellObject o) => { inputCellObjects[index] = null; };
-                    }
-                }
+                inputCellObjects[i] = inputCell;
+                int index = i;
+                inputCell.OnDestroy += (CellObject o) => inputCellObjects[index] = null;
             }
         }
     }
 
-    CellObject GetCellObjectFromDirection(Vector2Int direction)
+    private CellObject GetCellObjectFromDirection(Vector2Int direction)
     {
-        CellObject neighborCellObject = null;
-
         Vector3 worldPos = cellObject.chunk.GetCellWorldPosition(direction + cellObject.position);
         Chunk chunk = WorldManager.Instance.GetChunk(worldPos);
         if (chunk != null)
-        {
-            neighborCellObject = chunk.GetCellObject(chunk.GetCellCoords(worldPos));
-        }
+            return chunk.GetCellObject(chunk.GetCellCoords(worldPos));
+        return null;
+    }
 
-        return neighborCellObject;
+    void OnDrawGizmos()
+    {
+        if (!inventory.isInventoryEmpty())
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(transform.position + Vector3.up, 0.25f);
+        }
     }
     
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        
-        if(inventory.isInventoryFull())
-            Gizmos.DrawSphere(transform.position + Vector3.up, 0.1f);
-        
-    }
-
-    public Inventory GetInventory()
-    {
-        return inventory;
-    }
+    public Inventory GetInventory() => inventory;
 }
