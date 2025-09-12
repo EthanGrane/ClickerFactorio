@@ -57,6 +57,14 @@ public class Chunk : MonoBehaviour
         }
     }
 
+    public CellObject GetCellObject(Vector2Int cellPos)
+    {
+        if(cellPos.x < 0 || cellPos.x >= CHUNK_CELL_SIZE || cellPos.y < 0 || cellPos.y >= CHUNK_CELL_SIZE)
+            return null;
+
+        return cellData[cellPos.x, cellPos.y];
+    }
+
     // Función que devuelve una celda aleatoria vacía para un tamaño
     public Vector2Int? GetRandomEmptyCellForSize(int size, int seed = 0)
     {
@@ -191,17 +199,7 @@ public class Chunk : MonoBehaviour
 
         return true;
     }
-
-
-    public static int GetRotatedSize(int size, int rotation)
-    {
-        rotation = rotation % 4;
-        if (rotation == 1 || rotation == 3) // 90° o 270°
-            return size;
-        
-        return size; // 0° o 180°
-    }
-
+    
     public CellObject RemoveCellBuilding(Vector2Int cellPos)
     {
         CellObject removeObject = cellData[cellPos.x, cellPos.y];
@@ -278,7 +276,13 @@ public class Chunk : MonoBehaviour
         foreach (var building in chunkBuildings)
         {
             if(building.obj.GetComponent<IBuilding>().GetCellObject() != null)
-                building.obj.GetComponent<IBuilding>().Tick();
+                building.obj.GetComponent<IBuilding>().PlanTick();
+        }
+        
+        foreach (var building in chunkBuildings)
+        {
+            if(building.obj.GetComponent<IBuilding>().GetCellObject() != null)
+                building.obj.GetComponent<IBuilding>().ActionTick();
         }
     }
     

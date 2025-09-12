@@ -26,6 +26,52 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
     {
         return cellObject;
     }
+    
+    public void PlanTick()
+    {
+        
+    }
+    
+    public void ActionTick()
+    {
+        currentTicks++;
+
+        if (currentTicks >= ticksForInteract)
+        {
+            currentTicks = 0;
+
+            if (affectedObjects == null || affectedObjects.Count == 0)
+                SetupAffectedObjects();
+
+            foreach (CellObject cell in affectedObjects)
+            {
+                if (cell.type == CellType.Resource)
+                {
+                    ResourceMaterial harvestMaterial = cell.obj.GetComponent<ResourceMaterial>();
+                    if (harvestMaterial)
+                    {
+                        // Is inventory NOT full?
+                        // Is item Avaliable on inventory slots?
+                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceItem))
+                        {
+                            if(!ps.isPlaying)
+                                ps.Play();
+                            
+                            harvestMaterial.HarvestMaterial(1);
+                            harvestMaterial.BounceObject();
+                            inventory.AddItemToInventory(harvestMaterial.resourceItem);
+                        }
+                        else
+                        {
+                            if(ps.isPlaying)
+                                ps.Stop();
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 
     private void SetupAffectedObjects()
     {
@@ -73,48 +119,7 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
             if (cellR != null) affectedObjects.Add(cellR);
         }
     }
-
-    public void Tick()
-    {
-        currentTicks++;
-
-        if (currentTicks >= ticksForInteract)
-        {
-            currentTicks = 0;
-
-            if (affectedObjects == null || affectedObjects.Count == 0)
-                SetupAffectedObjects();
-
-            foreach (CellObject cell in affectedObjects)
-            {
-                if (cell.type == CellType.Resource)
-                {
-                    ResourceMaterial harvestMaterial = cell.obj.GetComponent<ResourceMaterial>();
-                    if (harvestMaterial)
-                    {
-                        // Is inventory NOT full?
-                        // Is item Avaliable on inventory slots?
-                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceItem))
-                        {
-                            if(!ps.isPlaying)
-                                ps.Play();
-                            
-                            harvestMaterial.HarvestMaterial(1);
-                            harvestMaterial.BounceObject();
-                            inventory.AddItemToInventory(harvestMaterial.resourceItem);
-                        }
-                        else
-                        {
-                            if(ps.isPlaying)
-                                ps.Stop();
-                        }
-                    }
-
-                }
-            }
-        }
-    }
-
+    
     void OnDrawGizmos()
     {
         if (cellObject == null) return;

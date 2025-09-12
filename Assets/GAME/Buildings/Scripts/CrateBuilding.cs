@@ -24,7 +24,12 @@ public class CrateBuilding : MonoBehaviour, IBuilding, IInventory
         return cellObject;
     }
 
-    public void Tick()
+    public void PlanTick()
+    {
+        
+    }
+
+    public void ActionTick()
     {
         
     }

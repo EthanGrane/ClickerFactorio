@@ -2,6 +2,7 @@
  * Hay que optimizar todos los datos usados apra reducir la carga, hay que usar Bytes para gurdar valores.
  */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,6 +11,8 @@ using UnityEngine.Serialization;
 public class Inventory
 {
     public Slot[] _slots;
+    public event Action OnItemAdded;
+    public event Action OnItemRemoved;
     
     public Inventory(int numberOfSlots, int slotSize)
     {
@@ -26,6 +29,7 @@ public class Inventory
             if (_slots[i].IsItemAvaliableOnSlot(item))
             {
                 _slots[i].AddItem(item);
+                OnItemAdded?.Invoke();
                 break;
             }
         }
@@ -38,10 +42,34 @@ public class Inventory
         {
             removedItem = _slots[i].RemoveItem();
             if (removedItem != null)
+            {
+                OnItemRemoved?.Invoke();
                 return removedItem;
+            }        
         }    
         
         return removedItem;
+    }
+
+    public Item PeekItemFromInventory()
+    {
+        Item peekedItem = null;
+
+        if (_slots.Length > 0)
+        {
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].PeekItem() != null)
+                {
+                    peekedItem = _slots[i]._itemFilter;
+                    if (peekedItem != null)
+                        return peekedItem;
+                }
+            }
+        }
+
+        Debug.LogWarning("No item found");
+        return peekedItem;
     }
 
     public bool isInventoryFull()
@@ -53,6 +81,17 @@ public class Inventory
                 isFull = false;
         
         return isFull;
+    }
+
+    public bool isInventoryEmpty()
+    {
+        bool isEmpty = true;
+
+        for (int i = 0; i < _slots.Length; i++)
+            if (_slots[i].IsSlotEmpty() == false)
+                isEmpty = false;
+        
+        return isEmpty;
     }
 
     public bool isItemAvaliableOnInventory(Item item)
@@ -87,19 +126,19 @@ public class Slot
     // Añade un item al slot siempre que el item sea igual al item preferente del inventario
     public void AddItem(Item item)
     {
+        DEBUG_slotItems = _slotItems.ToArray();
+
         // Si el inventario esta vacio hay que Inicializar de nuevo el slot permitiendo colocar otgro tipo de item,
         // el codigo no soporta que el slot una vez vacio pueda tener otro item
         if (_itemFilter == null)
         {
             Debug.Log("Item Filter inicialized");
-            DEBUG_slotItems = null;
             _itemFilter = item;
         }        
         
         if (item == null)
         {
             Debug.LogWarning("Item is null");
-            DEBUG_slotItems = null;
             return;
         }
 
@@ -113,10 +152,12 @@ public class Slot
         
         DEBUG_slotItems = _slotItems.ToArray();
     }
-
+    
     // Quita el ultimo item de la queue (Como todos los items dentro del slot son iguales con quitar el ultimo bastara.)
     public Item RemoveItem()
     {
+        DEBUG_slotItems = _slotItems.ToArray();
+
         if (_slotItems == null)
         {
             Debug.LogWarning("Item is null");
@@ -130,11 +171,32 @@ public class Slot
             return null;
         }        
         
-        DEBUG_slotItems = _slotItems.ToArray();
         _slotItems.Dequeue();
+        DEBUG_slotItems = _slotItems.ToArray();
+        
         return _itemFilter;
     }
 
+    public ItemInstance PeekItem()
+    {
+        if(_slotItems == null)
+            return null;
+        if(_slotItems.Count == 0)
+            return null;
+        
+        return _slotItems.Peek();
+    }
+
+    public int GetSlotQuantity()
+    {
+        return _slotItems.Count;
+    }
+
+    public bool IsSlotEmpty()
+    {
+        return _slotItems.Count == 0;
+    }
+    
     public int GetSlotSize()
     {
         return _slotSize;
@@ -147,6 +209,7 @@ public class Slot
 
     public Inventory GetInventory()
     {
+        DEBUG_slotItems = _slotItems.ToArray();
         return _inventoryReference;
     }
 
@@ -155,7 +218,9 @@ public class Slot
     {
         if (item == null)
         {
+            /*
             Debug.LogWarning("Item is null");
+            */
             return false;
         }
 

@@ -7,5 +7,6 @@ public interface IBuilding
     public void Initialize(CellObject cellObject);
     
     public CellObject GetCellObject();
-    public void Tick();
+    public void PlanTick();
+    public void ActionTick();
 }

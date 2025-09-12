@@ -1,25 +1,29 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
 {
     private CellObject cellObject;
     public Inventory inventory;
-    
-    // Esto deberia de ser Inventory???
-    public CellObject inputCellObject;
+    [Space]
+    public CellObject[] inputCellObjects = new CellObject[3];
     public CellObject outputCellObject;
-
-    private bool alreadyCheckedOnThisTick = false;
-    private bool alreadyMovedItemOnThisTick = false;
-
+    
+    public Item plannedInputItem = null;
+    public CellObject plannedInputCellObject = null;
+    public Item plannedOutputItem = null;
+    
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
         // Un conveyor simultaneamente solo puede tener un objeto
         inventory = new Inventory(1, 1);
         
-        CheckNeighbor();
+        for (int i = 0; i < inputCellObjects.Length; i++)
+            inputCellObjects[i] = null;
+        outputCellObject = null;
     }
     
     public CellObject GetCellObject()
@@ -27,188 +31,128 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
         return cellObject;
     }
 
-    public void Tick()
+    public void PlanTick()
     {
-        alreadyCheckedOnThisTick = false;
-        alreadyMovedItemOnThisTick = false;
-
-        if (outputCellObject != null && outputCellObject.obj && !alreadyMovedItemOnThisTick)
+        CheckNeighbor();
+        
+        // Input
+        if (!inventory.isInventoryFull())
         {
-            if (inventory.isInventoryFull()) // Tengo un item en mi inventario entonces lo desplazo al proximo inventario
+            for (int i = 0; i < inputCellObjects.Length; i++)
             {
-                Inventory outputInventory = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
-
-                if (outputInventory.isInventoryFull() == false)
+                if (inputCellObjects[i] != null)
                 {
-                    outputInventory.AddItemToInventory(inventory.DequeueItemFromInventory());
+                    Inventory inputInv = inputCellObjects[i].obj.GetComponent<IInventory>().GetInventory();
+                    Item item = inputInv.PeekItemFromInventory();
+                    if (item != null)
+                    {
+                        plannedInputItem = item;
+                        plannedInputCellObject = inputCellObjects[i];
+                        break;
+                    }
                 }
             }
         }
         
-        if (inputCellObject != null && inputCellObject.obj && !alreadyCheckedOnThisTick)
+        // Output
+        if (outputCellObject != null && !inventory.isInventoryEmpty())
         {
-            if (inventory.isInventoryFull() == false)   // Tengo hueco en el inventario entonces recojo un item
+            Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
+            if (!outputInv.isInventoryFull())
             {
-                inventory.AddItemToInventory(inputCellObject.obj.GetComponent<IInventory>().GetInventory().DequeueItemFromInventory());
+                plannedOutputItem = inventory.PeekItemFromInventory();
             }
+        }    
+    }
+    
+    public void ActionTick()
+    {
+        // Entrada: coger realmente el item
+        if (plannedInputItem != null && !inventory.isInventoryFull())
+        {
+            Inventory inputInv = plannedInputCellObject.obj.GetComponent<IInventory>().GetInventory(); // suponiendo que Item o Inventory guarda referencia
+            Item item = inputInv.DequeueItemFromInventory();
+            if (item != null) inventory.AddItemToInventory(item);
         }
+
+        // En PlanAction para la salida
+        if (plannedOutputItem != null && !inventory.isInventoryEmpty())
+        {
+            Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
+            Item item = inventory.DequeueItemFromInventory();
+            if (item != null) outputInv.AddItemToInventory(item);
+        }
+
+        plannedInputItem = null;
+        plannedInputCellObject = null;
+        plannedOutputItem = null;
     }
     
     public void CheckNeighbor()
     {
-        if (alreadyCheckedOnThisTick) return;
-        alreadyCheckedOnThisTick = true;
-
-        Vector2Int myForward = cellObject.GetForwardDir();
-        Vector2Int myPos = cellObject.position;
-        
-        // ---------------- OUTPUT ----------------
-        if (outputCellObject.obj == null)
+        if (outputCellObject == null)
         {
-            Vector2Int frontLocal = myPos + myForward;
-            Vector3 frontWorldPos = cellObject.chunk.GetCellWorldPosition(frontLocal);
-
-            Chunk fwdChunk = WorldManager.Instance.GetChunk(frontWorldPos);
-            Vector2Int fwdCell = fwdChunk.GetCellCoords(frontWorldPos);
-            CellObject forwardCell = fwdChunk.cellData[fwdCell.x, fwdCell.y];
-
-            if (forwardCell?.obj)
+            // -- OUTPUT --
+            CellObject fwd = GetCellObjectFromDirection(cellObject.GetForwardDir());
+            if (fwd != null)
             {
-                // Si el forward es un conveyor
-                if (forwardCell.obj.TryGetComponent(out ConveyorBuilding fwdConv))
+                if (fwd.obj.GetComponent<IInventory>() != null)
                 {
-                    // Si el conveyor de adelante mira hacia mi, yo soy su input
-                    if (fwdConv.cellObject.position + fwdConv.cellObject.GetForwardDir() == myPos)
+                    outputCellObject = fwd;
+                    outputCellObject.OnDestroy += (CellObject o) =>
                     {
-                        SetBuildingInput(forwardCell);
-                        fwdConv.SetBuildingOutput(cellObject);
-                    }
-                    else // Si no, él es mi output
-                    {
-                        SetBuildingOutput(forwardCell);
-                        fwdConv.SetBuildingInput(cellObject);
-                    }
-                }
-
-                if (forwardCell.obj.TryGetComponent(out IInventory fwdInventory))
-                {
-                    Debug.Log("forwardCell.obj.TryGetComponent(out IInventory fwdInventory)");
-                    SetBuildingOutput(fwdInventory.GetCellObject());
-                }
-                else
-                {
-                    Debug.Log("forwardCell.obj.TryGetComponent(out IInventory fwdInventory) == NULL");
+                        outputCellObject = null;
+                    };
                 }
             }
         }
 
-        // ---------------- INPUTS ----------------
-        if (inputCellObject.obj == null)
+        // -- INPUT --
+        Vector2Int[] directions =
         {
-            Vector2Int[] directions =
+            -cellObject.GetForwardDir(),
+            cellObject.GetRightDir(),
+            -cellObject.GetRightDir(),
+        };
+        for (int i = 0; i < directions.Length; i++)
+        {
+            CellObject inputCellObject = GetCellObjectFromDirection(directions[i]);
+            if (inputCellObject != null)
             {
-                -myForward,
-                cellObject.GetRightDir(),
-                -cellObject.GetRightDir()
-            };
-
-            foreach (Vector2Int dir in directions)
-            {
-                Vector2Int inputLocalCellPos = myPos + dir;
-                Vector3 inputWorldPos = cellObject.chunk.GetCellWorldPosition(inputLocalCellPos);
-
-                Chunk inputChunk = WorldManager.Instance.GetChunk(inputWorldPos);
-                Vector2Int inputCellCoords = inputChunk.GetCellCoords(inputWorldPos);
-                CellObject inputCell = inputChunk.cellData[inputCellCoords.x, inputCellCoords.y];
-
-                if (inputCell?.obj)
+                if (inputCellObject.obj.GetComponent<IInventory>() != null)
                 {
-                    // Si el INPUT es un conveyor
-                    if (inputCell.obj.TryGetComponent(out ConveyorBuilding inputConv))
+                    if (inputCellObjects != null)
                     {
-                        // Confirmar que este vecino apunta hacia mí
-                        if (inputConv.cellObject.position + inputConv.cellObject.GetForwardDir() == myPos)
-                        {
-                            SetBuildingInput(inputCell);
-                            inputConv.SetBuildingOutput(cellObject);
-                        }
-                    }
-
-                    if (inputCell.obj.TryGetComponent(out IInventory inputInv))
-                    {
-                        SetBuildingInput(inputInv.GetCellObject());
+                        inputCellObjects[i] = inputCellObject;
+                        int index = i;
+                        inputCellObjects[i].OnDestroy += (CellObject o) => { inputCellObjects[index] = null; };
                     }
                 }
             }
         }
     }
 
-    public void SetBuildingInput(CellObject input)
+    CellObject GetCellObjectFromDirection(Vector2Int direction)
     {
-        if (!input.obj) return;
-        if (!input.obj.TryGetComponent<IInventory>(out _)) return;
+        CellObject neighborCellObject = null;
 
-        inputCellObject = input;
-        input.OnDestroy += (inputCell) =>
+        Vector3 worldPos = cellObject.chunk.GetCellWorldPosition(direction + cellObject.position);
+        Chunk chunk = WorldManager.Instance.GetChunk(worldPos);
+        if (chunk != null)
         {
-            if (inputCellObject == inputCell)
-                inputCellObject = null;
-        };
-    }
-
-    public void SetBuildingOutput(CellObject output)
-    {
-        if (!output.obj) return;
-        if (!output.obj.TryGetComponent<IInventory>(out _)) return;
-
-        outputCellObject = output;
-        output.OnDestroy += (outputCell) =>
-        {
-            if (outputCellObject == outputCell)
-                outputCellObject = null;
-        };
-    }
-    
-    #region DEBUG
-    
-    void Update()
-    {
-        DrawDebugConnections();
-    }
-    
-    
-    private void DrawDebugConnections()
-    {
-        if (inputCellObject?.obj != null)
-        {
-            Debug.DrawLine(
-                cellObject.chunk.GetCellWorldPosition(cellObject.position) + Vector3.up * 1.2f,
-                inputCellObject.chunk.GetCellWorldPosition(inputCellObject.position) + Vector3.up * 1.2f,
-                Color.green
-            );
+            neighborCellObject = chunk.GetCellObject(chunk.GetCellCoords(worldPos));
         }
 
-        if (outputCellObject?.obj != null)
-        {
-            Debug.DrawLine(
-                cellObject.chunk.GetCellWorldPosition(cellObject.position) + Vector3.up * 1.5f,
-                outputCellObject.chunk.GetCellWorldPosition(outputCellObject.position) + Vector3.up * 1.5f,
-                Color.red
-            );
-        }
+        return neighborCellObject;
     }
     
-    #endregion
-
     private void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-
+        Gizmos.color = Color.red;
+        
         if(inventory.isInventoryFull())
-            Gizmos.color = Color.red;
-
-        Gizmos.DrawSphere(transform.position + Vector3.up, 0.1f);
-
+            Gizmos.DrawSphere(transform.position + Vector3.up, 0.1f);
+        
     }
 
     public Inventory GetInventory()
