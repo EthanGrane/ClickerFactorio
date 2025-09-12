@@ -92,12 +92,14 @@ public class Slot
         if (_itemFilter == null)
         {
             Debug.Log("Item Filter inicialized");
+            DEBUG_slotItems = null;
             _itemFilter = item;
         }        
         
         if (item == null)
         {
             Debug.LogWarning("Item is null");
+            DEBUG_slotItems = null;
             return;
         }
 
@@ -118,11 +120,13 @@ public class Slot
         if (_slotItems == null)
         {
             Debug.LogWarning("Item is null");
+            DEBUG_slotItems = null;
             return null;
         }        
         if(_slotItems.Count == 0)
         {
             Debug.LogWarning("Item is empty");
+            DEBUG_slotItems = null;
             return null;
         }        
         

@@ -41,7 +41,6 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
                 if (outputInventory.isInventoryFull() == false)
                 {
                     outputInventory.AddItemToInventory(inventory.DequeueItemFromInventory());
-                    alreadyMovedItemOnThisTick = true;
                 }
             }
         }
@@ -51,7 +50,6 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
             if (inventory.isInventoryFull() == false)   // Tengo hueco en el inventario entonces recojo un item
             {
                 inventory.AddItemToInventory(inputCellObject.obj.GetComponent<IInventory>().GetInventory().DequeueItemFromInventory());
-                alreadyMovedItemOnThisTick = true;
             }
         }
     }

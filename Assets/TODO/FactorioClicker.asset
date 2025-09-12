@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: FactorioClicker
   m_EditorClassIdentifier: 
   tasks:
+  - taskName: Rework Conveyor System using IInventory
+    tag: 0
+    notes: 
   - taskName: Caja de inventario
     tag: 1
     notes: 'Objetivo: El conveyor busque por IInventory y saque los items de la caja,
