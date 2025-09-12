@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: FactorioClicker
   m_EditorClassIdentifier: 
   tasks:
-  - taskName: Rework Conveyor System using IInventory
+  - taskName: Si dos inputs entran por el mismo sitio se solapan los objetos
     tag: 0
+    notes: 
+  - taskName: New Task
+    tag: 0
+    notes: 
+  - taskName: Rework Conveyor System using IInventory
+    tag: 1
     notes: 
   - taskName: Caja de inventario
     tag: 1

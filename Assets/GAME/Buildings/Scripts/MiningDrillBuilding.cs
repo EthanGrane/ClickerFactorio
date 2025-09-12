@@ -51,15 +51,15 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
                     if (harvestMaterial)
                     {
                         // Is inventory NOT full?
-                        // Is item Avaliable on inventory slots?
-                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceItem))
+                        // Is resourceItem Avaliable on inventory slots?
+                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceResourceItem))
                         {
                             if(!ps.isPlaying)
                                 ps.Play();
                             
                             harvestMaterial.HarvestMaterial(1);
                             harvestMaterial.BounceObject();
-                            inventory.AddItemToInventory(harvestMaterial.resourceItem);
+                            inventory.AddItemToInventory(harvestMaterial.resourceResourceItem);
                         }
                         else
                         {

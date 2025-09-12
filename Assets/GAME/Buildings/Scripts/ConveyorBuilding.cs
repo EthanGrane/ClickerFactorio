@@ -11,9 +11,9 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
     public CellObject[] inputCellObjects = new CellObject[3];
     public CellObject outputCellObject;
     
-    public Item plannedInputItem = null;
+    [FormerlySerializedAs("plannedInputItem")] public ResourceItem plannedInputResourceItem = null;
     public CellObject plannedInputCellObject = null;
-    public Item plannedOutputItem = null;
+    [FormerlySerializedAs("plannedOutputItem")] public ResourceItem plannedOutputResourceItem = null;
     
     public void Initialize(CellObject cellObject)
     {
@@ -43,10 +43,10 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
                 if (inputCellObjects[i] != null)
                 {
                     Inventory inputInv = inputCellObjects[i].obj.GetComponent<IInventory>().GetInventory();
-                    Item item = inputInv.PeekItemFromInventory();
-                    if (item != null)
+                    ResourceItem resourceItem = inputInv.PeekItemFromInventory();
+                    if (resourceItem != null)
                     {
-                        plannedInputItem = item;
+                        plannedInputResourceItem = resourceItem;
                         plannedInputCellObject = inputCellObjects[i];
                         break;
                     }
@@ -60,32 +60,32 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
             if (!outputInv.isInventoryFull())
             {
-                plannedOutputItem = inventory.PeekItemFromInventory();
+                plannedOutputResourceItem = inventory.PeekItemFromInventory();
             }
         }    
     }
     
     public void ActionTick()
     {
-        // Entrada: coger realmente el item
-        if (plannedInputItem != null && !inventory.isInventoryFull())
+        // Entrada: coger realmente el resourceItem
+        if (plannedInputResourceItem != null && !inventory.isInventoryFull())
         {
-            Inventory inputInv = plannedInputCellObject.obj.GetComponent<IInventory>().GetInventory(); // suponiendo que Item o Inventory guarda referencia
-            Item item = inputInv.DequeueItemFromInventory();
-            if (item != null) inventory.AddItemToInventory(item);
+            Inventory inputInv = plannedInputCellObject.obj.GetComponent<IInventory>().GetInventory(); // suponiendo que ResourceItem o Inventory guarda referencia
+            ResourceItem resourceItem = inputInv.DequeueItemFromInventory();
+            if (resourceItem != null) inventory.AddItemToInventory(resourceItem);
         }
 
         // En PlanAction para la salida
-        if (plannedOutputItem != null && !inventory.isInventoryEmpty())
+        if (plannedOutputResourceItem != null && !inventory.isInventoryEmpty())
         {
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
-            Item item = inventory.DequeueItemFromInventory();
-            if (item != null) outputInv.AddItemToInventory(item);
+            ResourceItem resourceItem = inventory.DequeueItemFromInventory();
+            if (resourceItem != null) outputInv.AddItemToInventory(resourceItem);
         }
 
-        plannedInputItem = null;
+        plannedInputResourceItem = null;
         plannedInputCellObject = null;
-        plannedOutputItem = null;
+        plannedOutputResourceItem = null;
     }
     
     public void CheckNeighbor()

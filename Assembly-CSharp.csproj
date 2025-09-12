@@ -59,6 +59,7 @@
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\CellObject.cs" />
+    <Compile Include="Assets\GAME\WorldResources\Items\Scripts\ItemResource_SO.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\Inventory.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
     <Compile Include="Assets\GAME\World\Scripts\DayNightCycle.cs" />

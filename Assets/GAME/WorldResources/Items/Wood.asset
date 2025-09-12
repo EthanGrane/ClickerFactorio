@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: ItemTest
-  m_EditorClassIdentifier: Assembly-CSharp::Item
-  itemName: Test Name
-  itemDescription: Test Description
-  itemValue: 10
-  itemIcon: {fileID: 21300000, guid: b2b175e86f241484a83f1bf8310fa02a, type: 3}
+  m_Script: {fileID: 11500000, guid: 10c41bffb53d89f41b5963bb0bf8118d, type: 3}
+  m_Name: Wood
+  m_EditorClassIdentifier: 
+  itemName: Wood
+  itemDescription: 
+  itemValue: 0
+  itemIcon: {fileID: 21300000, guid: 8947f95232e25e04ca946021bb118aa0, type: 3}

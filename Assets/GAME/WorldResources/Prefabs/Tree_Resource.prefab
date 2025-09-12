@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resourceHealth: 500
-  resourceItem: {fileID: 11400000, guid: b48dae7eebfddef4491d73497419b9df, type: 2}
+  resourceResourceItem: {fileID: 11400000, guid: 68b4aa252062a6a4ba2ea3392c865f4d, type: 2}
   hitSound: Hit
 --- !u!136 &4305755005449885228
 CapsuleCollider:

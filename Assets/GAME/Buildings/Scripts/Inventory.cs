@@ -22,38 +22,38 @@ public class Inventory
             _slots[i] = new Slot(this, slotSize);
     }
 
-    public void AddItemToInventory(Item item)
+    public void AddItemToInventory(ResourceItem resourceItem)
     {
         for (int i = 0; i < _slots.Length; i++)
         {
-            if (_slots[i].IsItemAvaliableOnSlot(item))
+            if (_slots[i].IsItemAvaliableOnSlot(resourceItem))
             {
-                _slots[i].AddItem(item);
+                _slots[i].AddItem(resourceItem);
                 OnItemAdded?.Invoke();
                 break;
             }
         }
     }
 
-    public Item DequeueItemFromInventory()
+    public ResourceItem DequeueItemFromInventory()
     {
-        Item removedItem = null;
+        ResourceItem removedResourceItem = null;
         for (int i = 0; i < _slots.Length; i++)
         {
-            removedItem = _slots[i].RemoveItem();
-            if (removedItem != null)
+            removedResourceItem = _slots[i].RemoveItem();
+            if (removedResourceItem != null)
             {
                 OnItemRemoved?.Invoke();
-                return removedItem;
+                return removedResourceItem;
             }        
         }    
         
-        return removedItem;
+        return removedResourceItem;
     }
 
-    public Item PeekItemFromInventory()
+    public ResourceItem PeekItemFromInventory()
     {
-        Item peekedItem = null;
+        ResourceItem peekedResourceItem = null;
 
         if (_slots.Length > 0)
         {
@@ -61,15 +61,15 @@ public class Inventory
             {
                 if (_slots[i].PeekItem() != null)
                 {
-                    peekedItem = _slots[i]._itemFilter;
-                    if (peekedItem != null)
-                        return peekedItem;
+                    peekedResourceItem = _slots[i].resourceItemFilter;
+                    if (peekedResourceItem != null)
+                        return peekedResourceItem;
                 }
             }
         }
 
-        Debug.LogWarning("No item found");
-        return peekedItem;
+        Debug.LogWarning("No resourceItem found");
+        return peekedResourceItem;
     }
 
     public bool isInventoryFull()
@@ -94,12 +94,12 @@ public class Inventory
         return isEmpty;
     }
 
-    public bool isItemAvaliableOnInventory(Item item)
+    public bool isItemAvaliableOnInventory(ResourceItem resourceItem)
     {
         bool isAvaliable = false;
         
         for (int i = 0; i < _slots.Length; i++)
-            if(_slots[i].IsItemAvaliableOnSlot(item))
+            if(_slots[i].IsItemAvaliableOnSlot(resourceItem))
                 isAvaliable = true;
         
         return isAvaliable;
@@ -113,7 +113,7 @@ public class Slot
     public Queue<ItemInstance> _slotItems;
     // Debug
     public ItemInstance[] DEBUG_slotItems;
-    public Item _itemFilter;
+    [FormerlySerializedAs("_itemFilter")] public ResourceItem resourceItemFilter;
     [System.NonSerialized] private Inventory _inventoryReference;
 
     public Slot(Inventory slotInventoryReference ,int slotSize)
@@ -123,50 +123,50 @@ public class Slot
         _slotItems = new Queue<ItemInstance>();
     }
 
-    // Añade un item al slot siempre que el item sea igual al item preferente del inventario
-    public void AddItem(Item item)
+    // Añade un resourceItem al slot siempre que el resourceItem sea igual al resourceItem preferente del inventario
+    public void AddItem(ResourceItem resourceItem)
     {
         DEBUG_slotItems = _slotItems.ToArray();
 
-        // Si el inventario esta vacio hay que Inicializar de nuevo el slot permitiendo colocar otgro tipo de item,
-        // el codigo no soporta que el slot una vez vacio pueda tener otro item
-        if (_itemFilter == null)
+        // Si el inventario esta vacio hay que Inicializar de nuevo el slot permitiendo colocar otgro tipo de resourceItem,
+        // el codigo no soporta que el slot una vez vacio pueda tener otro resourceItem
+        if (resourceItemFilter == null)
         {
-            Debug.Log("Item Filter inicialized");
-            _itemFilter = item;
+            Debug.Log("ResourceItem Filter inicialized");
+            resourceItemFilter = resourceItem;
         }        
         
-        if (item == null)
+        if (resourceItem == null)
         {
-            Debug.LogWarning("Item is null");
+            Debug.LogWarning("ResourceItem is null");
             return;
         }
 
-        if (item != _itemFilter)
+        if (resourceItem != resourceItemFilter)
         {
-            Debug.LogWarning($"Item: {item.itemName} is not equal to slot item: {_itemFilter.itemName}");
+            Debug.LogWarning($"ResourceItem: {resourceItem.itemName} is not equal to slot resourceItem: {resourceItemFilter.itemName}");
             return;
         }
         
-        _slotItems.Enqueue(new ItemInstance(item,1));
+        _slotItems.Enqueue(new ItemInstance(resourceItem,1));
         
         DEBUG_slotItems = _slotItems.ToArray();
     }
     
-    // Quita el ultimo item de la queue (Como todos los items dentro del slot son iguales con quitar el ultimo bastara.)
-    public Item RemoveItem()
+    // Quita el ultimo resourceItem de la queue (Como todos los items dentro del slot son iguales con quitar el ultimo bastara.)
+    public ResourceItem RemoveItem()
     {
         DEBUG_slotItems = _slotItems.ToArray();
 
         if (_slotItems == null)
         {
-            Debug.LogWarning("Item is null");
+            Debug.LogWarning("ResourceItem is null");
             DEBUG_slotItems = null;
             return null;
         }        
         if(_slotItems.Count == 0)
         {
-            Debug.LogWarning("Item is empty");
+            Debug.LogWarning("ResourceItem is empty");
             DEBUG_slotItems = null;
             return null;
         }        
@@ -174,7 +174,7 @@ public class Slot
         _slotItems.Dequeue();
         DEBUG_slotItems = _slotItems.ToArray();
         
-        return _itemFilter;
+        return resourceItemFilter;
     }
 
     public ItemInstance PeekItem()
@@ -202,9 +202,9 @@ public class Slot
         return _slotSize;
     }
 
-    public Item GetItem()
+    public ResourceItem GetItem()
     {
-        return _itemFilter;
+        return resourceItemFilter;
     }
 
     public Inventory GetInventory()
@@ -214,23 +214,23 @@ public class Slot
     }
 
     // Comprueba si el filter es el mismo y comrpueba si hay espacio
-    public bool IsItemAvaliableOnSlot(Item item)
+    public bool IsItemAvaliableOnSlot(ResourceItem resourceItem)
     {
-        if (item == null)
+        if (resourceItem == null)
         {
             /*
-            Debug.LogWarning("Item is null");
+            Debug.LogWarning("ResourceItem is null");
             */
             return false;
         }
 
         // Inventario esta vacio y no esta inicializado
-        if (_itemFilter == null)
+        if (resourceItemFilter == null)
         {
             return true;
         }
         
-        if (item == _itemFilter)
+        if (resourceItem == resourceItemFilter)
         {
             if (_slotItems.Count < _slotSize)
             {
@@ -251,23 +251,12 @@ public class Slot
 [System.Serializable]
 public class ItemInstance
 {
-    public Item baseItem;
+    [FormerlySerializedAs("baseItem")] public ResourceItem baseResourceItem;
     public int amount;
 
-    public ItemInstance(Item item, int count = 1)
+    public ItemInstance(ResourceItem resourceItem, int count = 1)
     {
-        baseItem = item;
+        baseResourceItem = resourceItem;
         amount = count;
     }
-}
-
-[CreateAssetMenu(fileName = "New Item", menuName = "GAME/Item")]
-public class Item : ScriptableObject
-{
-    public string itemName;
-    public string itemDescription;
-    [Space]
-    public int itemValue;
-    [Space]
-    public Sprite itemIcon;
 }
