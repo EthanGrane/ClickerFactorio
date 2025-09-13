@@ -46,27 +46,28 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.47f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\GAME\WorldResources\Scripts\ResourceMaterial.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Chunk.cs" />
     <Compile Include="Assets\GAME\Scripts\MathUtils.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\MiningDrillBuilding.cs" />
     <Compile Include="Assets\TODO\ToDo_SO.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMover.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />
+    <Compile Include="Assets\GAME\Resources\Scripts\ResourceMaterial.cs" />
     <Compile Include="Assets\GAME\Scripts\AudioManager.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\CrateBuilding.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\CellObject.cs" />
-    <Compile Include="Assets\GAME\WorldResources\Items\Scripts\ItemResource_SO.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\Inventory.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
     <Compile Include="Assets\GAME\World\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\ConveyorBuilding.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\InventoryTooltip.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMouse\PlayerMouse.cs" />
+    <Compile Include="Assets\GAME\Buildings\Scripts\MarketBuilding.cs" />
     <Compile Include="Assets\GAME\Scripts\EditorModMenu.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\BuildingObject.cs" />
+    <Compile Include="Assets\GAME\Resources\Items\Scripts\ItemResource_SO.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerHarvest.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerController.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerBuilding.cs" />

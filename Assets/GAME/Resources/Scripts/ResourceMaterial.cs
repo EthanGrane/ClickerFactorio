@@ -26,8 +26,6 @@ public class ResourceMaterial : MonoBehaviour
     public void HarvestMaterial(int damage)
     {
         resourceHealth -= damage;
-        GameManager.Instance.AddMoney(resourceResourceItem.itemValue * damage);
-
         AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)
             .Volume(1f)
             .PitchVariation(0.25f)

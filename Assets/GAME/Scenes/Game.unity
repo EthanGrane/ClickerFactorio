@@ -2722,6 +2722,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
+      propertyPath: inventoryBuildingObjects.Array.data[3].size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
       propertyPath: inventoryBuildingObjects.Array.data[0].prefab
       value: 
       objectReference: {fileID: 3883048380307085387, guid: ca32b85d8169d4144890b4c8ee84f16d, type: 3}
@@ -2734,6 +2738,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2043253054924171546, guid: b3178da75fdbeba43b5d48561dde511c, type: 3}
     - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
+      propertyPath: inventoryBuildingObjects.Array.data[3].prefab
+      value: 
+      objectReference: {fileID: 7857715113849980033, guid: e97a26a8c6985de45b8b77340e954c4f, type: 3}
+    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
       propertyPath: inventoryBuildingObjects.Array.data[0].BuildValue
       value: 5
       objectReference: {fileID: 0}
@@ -2743,6 +2751,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
       propertyPath: inventoryBuildingObjects.Array.data[2].BuildValue
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7521143263351224369, guid: fc59162522a68674d93815b8814bb777, type: 3}
+      propertyPath: inventoryBuildingObjects.Array.data[3].BuildValue
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

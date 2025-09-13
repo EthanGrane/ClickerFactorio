@@ -18,8 +18,9 @@ public class PlayerHarvest : MonoBehaviour
                 if (hit.transform.GetComponent<ResourceMaterial>())
                 {
                     hit.transform.GetComponent<ResourceMaterial>().HarvestMaterial(Mathf.FloorToInt(harvestDamage));
-
                     lastResourceMaterial = hit.transform.GetComponent<ResourceMaterial>();
+                    
+                    GameManager.Instance.AddMoney(lastResourceMaterial.resourceResourceItem.itemValue);
                 }
             }
         }
