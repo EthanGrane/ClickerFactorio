@@ -11,7 +11,7 @@ public class CrateBuilding : MonoBehaviour, IBuilding, IInventory
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
-        inventory = new Inventory(numberOfSlots, slotSize);
+        inventory = new Inventory(numberOfSlots, slotSize, "Crate");
     }
     
     // Crate no have logic

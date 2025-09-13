@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -19,7 +20,7 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
-        inventory = new Inventory(1, 1);
+        inventory = new Inventory(1, 1, "Conveyor Belt");
     
         for (int i = 0; i < inputCellObjects.Length; i++)
             inputCellObjects[i] = null;
@@ -80,10 +81,10 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
                 break; // Si no hay espacio, detenemos
         }
         
-        ShowConveyorItem();
+        HandleConveyorItem();
     }
 
-    void ShowConveyorItem()
+    void HandleConveyorItem()
     {
         if (inventory.PeekItemFromInventory() != null)
         {
@@ -138,7 +139,7 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
             return chunk.GetCellObject(chunk.GetCellCoords(worldPos));
         return null;
     }
-
+    
     void OnDrawGizmos()
     {
         if (!inventory.isInventoryEmpty())

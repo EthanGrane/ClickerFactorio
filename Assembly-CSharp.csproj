@@ -54,7 +54,6 @@
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMover.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />
     <Compile Include="Assets\GAME\Scripts\AudioManager.cs" />
-    <Compile Include="Assets\GAME\Scripts\UI\PlayerMoneyUI.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\CrateBuilding.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
@@ -64,12 +63,14 @@
     <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
     <Compile Include="Assets\GAME\World\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\ConveyorBuilding.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\InventoryTooltip.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMouse\PlayerMouse.cs" />
     <Compile Include="Assets\GAME\Scripts\EditorModMenu.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\BuildingObject.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerHarvest.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerController.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerBuilding.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\PlayerMoneyUI.cs" />
     <Compile Include="Assets\GAME\Scripts\GameManager.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />

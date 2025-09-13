@@ -19,7 +19,7 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
     public void Initialize(CellObject cellObject)
     {
         this.cellObject = cellObject;
-        inventory = new Inventory(2, 16);
+        inventory = new Inventory(2, 16, "Mining Drill");
     }
 
     public CellObject GetCellObject()

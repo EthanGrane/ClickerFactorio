@@ -10,12 +10,14 @@ using UnityEngine.Serialization;
 [System.Serializable]
 public class Inventory
 {
+    public string inventoryName;
     public Slot[] _slots;
     public event Action OnItemAdded;
     public event Action OnItemRemoved;
     
-    public Inventory(int numberOfSlots, int slotSize)
+    public Inventory(int numberOfSlots, int slotSize, string inventoryName)
     {
+        this.inventoryName = inventoryName;
         _slots = new Slot[numberOfSlots];
 
         for (int i = 0; i < _slots.Length; i++)
@@ -71,6 +73,8 @@ public class Inventory
         Debug.LogWarning("No resourceItem found");
         return peekedResourceItem;
     }
+    
+    public Slot[] GetSlots() => _slots;
 
     public bool isInventoryFull()
     {
