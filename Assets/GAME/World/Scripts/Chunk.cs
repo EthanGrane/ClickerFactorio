@@ -15,11 +15,6 @@ public class Chunk : MonoBehaviour
     public static float CHUNK_SIZE = 10f;
     public static int CHUNK_CELL_SIZE = 8;
     public static float CHUNK_SPACING(){return CHUNK_SIZE/CHUNK_CELL_SIZE;}
-    
-    private void Start()
-    {
-        WorldManager.Instance.onTick += ApplyTickToBuildings;
-    }
 
     public void InitializeChunk(int seed = 0, float height = 0)
     {
@@ -269,21 +264,6 @@ public class Chunk : MonoBehaviour
         float worldZ = pivotCell.y * cellSpacing + center.z - Chunk.CHUNK_SIZE/2 + offset.z;
 
         return new Vector3(worldX, chunkPosition.y, worldZ);
-    }
-
-    public void ApplyTickToBuildings()
-    {
-        foreach (var building in chunkBuildings)
-        {
-            if(building.obj.GetComponent<IBuilding>().GetCellObject() != null)
-                building.obj.GetComponent<IBuilding>().PlanTick();
-        }
-        
-        foreach (var building in chunkBuildings)
-        {
-            if(building.obj.GetComponent<IBuilding>().GetCellObject() != null)
-                building.obj.GetComponent<IBuilding>().ActionTick();
-        }
     }
     
     private void OnDrawGizmos()

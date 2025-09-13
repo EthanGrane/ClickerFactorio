@@ -86,6 +86,22 @@ public class WorldManager : MonoBehaviour
     {
         if (tickCoroutine == null)
             tickCoroutine = StartCoroutine(TickSystem());
+
+        onTick += () =>
+        {
+            foreach (var chunk in chunks)
+            {
+                foreach (var building in chunk.chunkBuildings)
+                {
+                    building.obj.GetComponent<IBuilding>().PlanTick();
+                }
+                
+                foreach (var building in chunk.chunkBuildings)
+                {
+                    building.obj.GetComponent<IBuilding>().ActionTick();
+                }
+            }
+        };
     }
 
     public void StopTicks()
