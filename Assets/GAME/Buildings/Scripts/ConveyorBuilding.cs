@@ -6,6 +6,7 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
 {
     private CellObject cellObject;
     public Inventory inventory;
+    public GameObject conveyorItem;
     [Space]
     public CellObject[] inputCellObjects = new CellObject[3];
     public CellObject outputCellObject;
@@ -19,7 +20,7 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
     {
         this.cellObject = cellObject;
         inventory = new Inventory(1, 1);
-
+    
         for (int i = 0; i < inputCellObjects.Length; i++)
             inputCellObjects[i] = null;
         outputCellObject = null;
@@ -72,13 +73,30 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
             ResourceItem item = plannedOutputItems.Dequeue();
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
             if (!outputInv.isInventoryFull())
+            {
                 outputInv.AddItemToInventory(item);
+            }           
             else
                 break; // Si no hay espacio, detenemos
         }
+        
+        ShowConveyorItem();
     }
 
-
+    void ShowConveyorItem()
+    {
+        if (inventory.PeekItemFromInventory() != null)
+        {
+            conveyorItem.SetActive(true);
+            conveyorItem.GetComponent<MeshRenderer>().material.mainTexture =
+                inventory.PeekItemFromInventory().itemIcon.texture;
+        }
+        else
+        {
+            conveyorItem.SetActive(false);
+        }
+    }
+    
     public void CheckNeighbor()
     {
         if (outputCellObject == null)

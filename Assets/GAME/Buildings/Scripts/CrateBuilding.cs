@@ -13,24 +13,12 @@ public class CrateBuilding : MonoBehaviour, IBuilding, IInventory
         this.cellObject = cellObject;
         inventory = new Inventory(numberOfSlots, slotSize);
     }
+    
+    // Crate no have logic
+    public void PlanTick(){}
+    public void ActionTick(){}
 
-    public CellObject GetCellObject()
-    {
-        return cellObject;
-    }
-
-    public void PlanTick()
-    {
-        
-    }
-
-    public void ActionTick()
-    {
-        
-    }
-
-    public Inventory GetInventory()
-    {
-        return inventory;
-    }
+    // Get
+    public CellObject GetCellObject() => cellObject;
+    public Inventory GetInventory() => inventory;
 }

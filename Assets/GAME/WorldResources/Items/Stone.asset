@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Stone
   itemDescription: 
   itemValue: 0
-  itemIcon: {fileID: 21300000, guid: b2b175e86f241484a83f1bf8310fa02a, type: 3}
+  itemIcon: {fileID: 21300000, guid: f2d431ab839697d41874687ac15bda39, type: 3}

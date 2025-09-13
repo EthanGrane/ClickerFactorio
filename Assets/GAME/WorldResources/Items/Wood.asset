@@ -15,4 +15,4 @@ MonoBehaviour:
   itemName: Wood
   itemDescription: 
   itemValue: 0
-  itemIcon: {fileID: 21300000, guid: 8947f95232e25e04ca946021bb118aa0, type: 3}
+  itemIcon: {fileID: 21300000, guid: 5fa6d01a3c1f677409056c4399837f58, type: 3}
