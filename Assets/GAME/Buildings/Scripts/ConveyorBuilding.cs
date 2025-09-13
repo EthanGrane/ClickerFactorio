@@ -75,6 +75,7 @@ public class ConveyorBuilding : MonoBehaviour, IBuilding, IInventory
             Inventory outputInv = outputCellObject.obj.GetComponent<IInventory>().GetInventory();
             if (!outputInv.isInventoryFull())
             {
+                inventory.ClearInventory();
                 outputInv.AddItemToInventory(item);
             }           
             else

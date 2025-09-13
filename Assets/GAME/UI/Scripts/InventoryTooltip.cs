@@ -28,8 +28,11 @@ public class InventoryTooltip : MonoBehaviour
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 25, buildingLayer))
         {
             if (hit.transform.gameObject == lastGameObjectHit)
-                return; // mismo objeto, no refrescamos
-
+            {
+                ShowInventoryTooltip(lastInventory);
+                return;
+            }
+            
             if (hit.transform.TryGetComponent(out IInventory inv))
             {
                 lastGameObjectHit = hit.transform.gameObject;

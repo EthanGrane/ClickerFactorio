@@ -12,12 +12,18 @@ public class Inventory
 {
     public string inventoryName;
     public Slot[] _slots;
+
+    private int numberOfSlots;
+    private int slotSize;
     public event Action OnItemAdded;
     public event Action OnItemRemoved;
     
     public Inventory(int numberOfSlots, int slotSize, string inventoryName)
     {
         this.inventoryName = inventoryName;
+        this.slotSize = slotSize;
+        this.numberOfSlots = numberOfSlots;
+        
         _slots = new Slot[numberOfSlots];
 
         for (int i = 0; i < _slots.Length; i++)
@@ -51,6 +57,14 @@ public class Inventory
         }    
         
         return removedResourceItem;
+    }
+
+    public void ClearInventory()
+    {
+        for (int i = 0; i < _slots.Length; i++)
+        {
+            _slots[i] = new Slot(this, slotSize);
+        }
     }
 
     public ResourceItem PeekItemFromInventory()
@@ -125,6 +139,7 @@ public class Slot
         _slotSize = slotSize;
         _inventoryReference = slotInventoryReference;
         _slotItems = new Queue<ItemInstance>();
+        resourceItemFilter = null;
     }
 
     // Añade un resourceItem al slot siempre que el resourceItem sea igual al resourceItem preferente del inventario
