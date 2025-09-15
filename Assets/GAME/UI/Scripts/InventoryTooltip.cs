@@ -25,7 +25,7 @@ public class InventoryTooltip : MonoBehaviour
 
     private void Update()
     {
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 25, buildingLayer))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, buildingLayer))
         {
             if (hit.transform.gameObject == lastGameObjectHit)
             {

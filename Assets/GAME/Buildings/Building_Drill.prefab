@@ -101,8 +101,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8528b5f9f34e4a9199d6df93cb8434b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ticksForInteract: 4
+  ticksForInteract: 10
   inventory:
+    inventoryName: 
     _slots: []
   affectedObjects: []
   ps: {fileID: 20512112773287659}

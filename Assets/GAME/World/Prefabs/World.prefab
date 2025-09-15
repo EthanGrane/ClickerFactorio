@@ -44,5 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e207948b79d50b34b921d90cf6e90b78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  worldSizeRadius: 1
+  seed: 145132
+  ticksPerSecond: 4
   chunkPrefab: {fileID: 3675691833987684447, guid: 1aa96787ce0dc134c96ab493b7fdb2ec, type: 3}
   chunks: []

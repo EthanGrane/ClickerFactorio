@@ -84,7 +84,7 @@ MonoBehaviour:
   groundRadius: 0.3
   groundMask:
     serializedVersion: 2
-    m_Bits: 257
+    m_Bits: 1297
 --- !u!114 &1714613029760020129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -102,8 +102,6 @@ MonoBehaviour:
   ResourceLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  harvestSound: {fileID: 8300000, guid: 1637adc4a3e19f342ad2bd0ef43086d5, type: 3}
-  harvestSoundUp: {fileID: 8300000, guid: c625d048ea118f6439c044fc0bd56362, type: 3}
 --- !u!114 &7521143263351224369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -120,12 +118,11 @@ MonoBehaviour:
   ghostMaterial: {fileID: 2100000, guid: c9ceb2f1cf5384d46a795a7fcf2ec57c, type: 2}
   obstructedMaterial: {fileID: 2100000, guid: 2f8215d6dfc7ba54a96ad40299ccad0f, type: 2}
   worldGridMaterial: {fileID: 2100000, guid: 116d3d7179aa85d47a32c3a312f48b72, type: 2}
+  chunkLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
   inventoryBuildingObjects:
-  - prefab: {fileID: 0}
-    size: 0
-    rotation: 0
-    BuildValue: 0
-  - prefab: {fileID: 2738694717052441456, guid: 9e4cf0b2af323e24d8f2c25a58bbc4b7, type: 3}
+  - prefab: {fileID: 3883048380307085387, guid: ca32b85d8169d4144890b4c8ee84f16d, type: 3}
     size: 1
     rotation: 0
     BuildValue: 5
@@ -133,10 +130,14 @@ MonoBehaviour:
     size: 2
     rotation: 0
     BuildValue: 50
-  - prefab: {fileID: 0}
-    size: 0
+  - prefab: {fileID: 2043253054924171546, guid: b3178da75fdbeba43b5d48561dde511c, type: 3}
+    size: 1
     rotation: 0
-    BuildValue: 0
+    BuildValue: 25
+  - prefab: {fileID: 7857715113849980033, guid: e97a26a8c6985de45b8b77340e954c4f, type: 3}
+    size: 1
+    rotation: 0
+    BuildValue: 25
   - prefab: {fileID: 0}
     size: 0
     rotation: 0
@@ -279,6 +280,8 @@ MonoBehaviour:
   damping: 20
   maxSway: 0.1
   moveSway: 0.1
+  mouseDownClip: {fileID: 8300000, guid: 1637adc4a3e19f342ad2bd0ef43086d5, type: 3}
+  mouseUpClip: {fileID: 8300000, guid: c625d048ea118f6439c044fc0bd56362, type: 3}
   pushStrength: 2
 --- !u!1 &7279759479314754240
 GameObject:

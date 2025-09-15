@@ -70,8 +70,8 @@
     <Compile Include="Assets\GAME\Resources\Items\Scripts\ItemResource_SO.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerHarvest.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\GAME\Player\Scripts\PlayerBuilding.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\PlayerMoneyUI.cs" />
+    <Compile Include="Assets\GAME\Player\Scripts\PlayerBuilding.cs" />
     <Compile Include="Assets\GAME\Scripts\GameManager.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
