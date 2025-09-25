@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public enum AudioChannel
 {
@@ -60,6 +61,7 @@ public class SoundInstance
     private float volume = 1f;
     private float pitchVariation = 0f;
     private float maxDistance = 100f;
+    private AudioMixerGroup audioMixerGroup;
 
     public SoundInstance(AudioClip clip, bool is3D, Vector3 position = default)
     {
@@ -86,6 +88,11 @@ public class SoundInstance
         return this;
     }
 
+    public SoundInstance AudioMixerGroup(AudioMixerGroup group)
+    {
+        this.audioMixerGroup = group;
+        return this;
+    }
 
     public void Play()
     {
@@ -99,7 +106,8 @@ public class SoundInstance
         source.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
         source.spatialBlend = is3D ? 1f : 0f;
         source.maxDistance = maxDistance;
-
+        source.outputAudioMixerGroup = audioMixerGroup;
+        
         if (is3D)
             go.transform.position = position;
 

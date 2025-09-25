@@ -2,13 +2,15 @@ using System;
 using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.Audio;
 using UnityEngine.Serialization;
 
 public class ResourceMaterial : MonoBehaviour
 {
     public int resourceHealth = 100;
-    [FormerlySerializedAs("resourceItem")] [FormerlySerializedAs("requiredItem")] public ResourceItem resourceResourceItem;
+    public ResourceItem resourceResourceItem;
     public string hitSound;
+    public AudioMixerGroup audioMixerGroup;
     
     ParticleSystem ps;
     Material material;
@@ -30,6 +32,7 @@ public class ResourceMaterial : MonoBehaviour
             .Volume(1f)
             .PitchVariation(0.25f)
             .MaxDistance(100f)
+            .AudioMixerGroup(audioMixerGroup)
             .Play();
         
         if (ps)

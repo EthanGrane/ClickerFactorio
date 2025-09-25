@@ -165,6 +165,7 @@ MonoBehaviour:
   resourceHealth: 1000
   resourceResourceItem: {fileID: 11400000, guid: bf9f508924ac521428150b4a1880534b, type: 2}
   hitSound: HitHighPitch
+  audioMixerGroup: {fileID: -6777477878817391457, guid: 6ded74007eb3af64eb2b633b694b6226, type: 2}
 --- !u!136 &3572104708885221299
 CapsuleCollider:
   m_ObjectHideFlags: 0

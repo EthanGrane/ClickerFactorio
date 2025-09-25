@@ -3,8 +3,8 @@ using System.Collections.Generic;
 
 public class EditorModMenu : MonoBehaviour
 {
-    private Rect windowRect = new Rect(20, 20, 250, 300);
-    private bool isMinimized = false;
+    private Rect windowRect = new Rect(20, Screen.height - 20, 250, 300);
+    private bool isMinimized = true;
 
     private List<(string label, System.Action action)> buttons;
 
@@ -42,12 +42,13 @@ public class EditorModMenu : MonoBehaviour
                     action.Invoke();
                 }
             }
+            windowRect.height = 300;
 
             GUILayout.EndVertical();
         }
         else
         {
-            GUILayout.Label("Minimizado");
+            windowRect.height = 35;
         }
 
         // Hacer la ventana arrastrable

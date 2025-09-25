@@ -1,5 +1,6 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class PlayerSway : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class PlayerSway : MonoBehaviour
     [Header("Sound")]
     public AudioClip mouseDownClip;
     public AudioClip mouseUpClip;
+    public AudioMixerGroup audioMixerGroup;
     
     [Header("Click Push")]
     public float pushStrength = 0.3f;
@@ -64,7 +66,7 @@ public class PlayerSway : MonoBehaviour
         // --- CLICK PUSH ---
         if (Input.GetMouseButtonDown(0))
         {
-            AudioManager.Instance.PlayOneShot2D(mouseDownClip).Volume(0.1f).PitchVariation(0.05f).Play();
+            AudioManager.Instance.PlayOneShot2D(mouseDownClip).Volume(0.1f).PitchVariation(0.05f).AudioMixerGroup(audioMixerGroup).Play();
 
             velocity += transform.InverseTransformDirection(cam.forward) * pushStrength;
             if (scaleTween == null)
@@ -85,7 +87,7 @@ public class PlayerSway : MonoBehaviour
         }
         
         if(Input.GetMouseButtonUp(0))
-            AudioManager.Instance.PlayOneShot2D(mouseUpClip).Volume(0.1f).PitchVariation(0.05f).Play();
+            AudioManager.Instance.PlayOneShot2D(mouseUpClip).Volume(0.1f).PitchVariation(0.05f).AudioMixerGroup(audioMixerGroup).Play();
 
         // --- ROTACIÓN SUAVE ---
         transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.identity, Time.deltaTime * 5f);

@@ -16,7 +16,7 @@ MonoBehaviour:
   - taskName: Si dos inputs entran por el mismo sitio se solapan los objetos
     tag: 0
     notes: 
-  - taskName: New Task
+  - taskName: Arbol de mejoras
     tag: 0
     notes: 
   - taskName: Rework Conveyor System using IInventory
