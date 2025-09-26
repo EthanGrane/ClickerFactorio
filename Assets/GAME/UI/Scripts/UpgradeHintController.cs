@@ -7,6 +7,7 @@ public class UpgradeHintController : MonoBehaviour
     public TextMeshProUGUI titleText;
     public TextMeshProUGUI descriptionText;
     public TextMeshProUGUI upgradeText;
+    public TextMeshProUGUI costText;
 
     private Dictionary<UpgradeType, string> upgradeMap = new Dictionary<UpgradeType, string>
     {
@@ -17,7 +18,8 @@ public class UpgradeHintController : MonoBehaviour
     public void SetupUpgradeHint(Upgrade upgrade)
     {
         titleText.text = upgrade.upgradeName;
-        descriptionText.text = $"Description\n\n{upgrade.upgradeDescription}";
+        descriptionText.text = $"{upgrade.upgradeDescription}";
         upgradeText.text = $"Upgrade Bonus\n\n{upgradeMap[upgrade.upgradeType].Replace("?",upgrade.value.ToString())}";
+        costText.text = $"Cost: {upgrade.upgradeCost}$";
     }
 }

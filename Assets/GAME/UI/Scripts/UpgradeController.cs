@@ -82,20 +82,26 @@ public class UpgradeController : MonoBehaviour
     /*
      * Interactions
      */
-    public void BuyUpgrade(UpgradeButton upgradeButton)
+    public bool BuyUpgrade(UpgradeButton upgradeButton)
     {
-        Debug.Log("Buying upgrade");
         if(_selectedUpgrade == null)
-            return;
-        Debug.Log("_selectedUpgrade");
+            return false;
 
-        upgradeButton.DisableButton();
+        if (GameManager.Instance.GetPlayerMoney() >= _selectedUpgrade.upgradeCost)
+        {
+            GameManager.Instance.RemoveMoney(_selectedUpgrade.upgradeCost);
+            
+            upgradeButton.DisableButton();
 
-        GameManager.Instance.AddUpgrade(_selectedUpgrade);
-        AudioManager.Instance.PlayOneShot2D(upgradeSound).Play();
-        _selectedUpgrade = null;
-        
-        upgradeButton.transform.DOShakeScale(1f, Vector3.one * 0.25f).SetUpdate(true);
+            GameManager.Instance.AddUpgrade(_selectedUpgrade);
+            AudioManager.Instance.PlayOneShot2D(upgradeSound).Play();
+            _selectedUpgrade = null;
+
+            upgradeButton.transform.DOShakeScale(1f, Vector3.one * 0.25f).SetUpdate(true);
+            return true;
+        }
+
+        return false;
     }
     
     public void SelectUpgradesHint(Upgrade upgrade)

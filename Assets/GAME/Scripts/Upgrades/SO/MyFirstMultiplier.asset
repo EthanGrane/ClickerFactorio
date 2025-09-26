@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: MyFirstMultiplier
   m_EditorClassIdentifier: 
   upgradeName: My First Multiplier :)
-  upgradeDescription: 
+  upgradeDescription: "Your first time? (\u0360\u2256 \u035C\u0296\u0360\u2256)"
   upgradeType: 0
   value: 1
+  upgradeCost: 5000

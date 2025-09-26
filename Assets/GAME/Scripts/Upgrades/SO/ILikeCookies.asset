@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: ILikeCookies
   m_EditorClassIdentifier: 
   upgradeName: I like Cookies
-  upgradeDescription: 
+  upgradeDescription: I NEED MORE COOKIES !!!!
   upgradeType: 1
   value: 3
+  upgradeCost: 1000

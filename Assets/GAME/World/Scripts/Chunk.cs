@@ -107,7 +107,7 @@ public class Chunk : MonoBehaviour
 
         go.transform.rotation = Quaternion.Euler(Vector3.up * (90f * building.rotation));
         go.transform.SetParent(transform);
-
+        
         // Inicializa la data
         objData.Initialize(chunk: this, obj: go, position: pivot, rotation: building.rotation);
         go.name = $"{objData.prefab.name} ({pivot.x}, {pivot.y})";

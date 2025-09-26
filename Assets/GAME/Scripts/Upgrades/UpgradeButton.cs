@@ -55,14 +55,16 @@ public class UpgradeButton : MonoBehaviour
 
     void UpgradeButtonClicked()
     {
-        upgradeController.BuyUpgrade(this);
+        if (upgradeController.BuyUpgrade(this))
+        {
 
-        // Se desactiva este botón
-        DisableButton();
+            // Se desactiva este botón
+            DisableButton();
 
-        // Se activa y muestra el siguiente en la cadena
-        if (nextUpgradeButton != null)
-            nextUpgradeButton.ShowAndEnable();
+            // Se activa y muestra el siguiente en la cadena
+            if (nextUpgradeButton != null)
+                nextUpgradeButton.ShowAndEnable();
+        }
     }
     
     public void SetUpgradeController(UpgradeController upgradeController)

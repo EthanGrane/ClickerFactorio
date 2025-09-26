@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class WorldManager : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class WorldManager : MonoBehaviour
     public int ticksPerSecond = 4;
     public Action onTick;
 
-    public GameObject chunkPrefab;
+    public GameObject[] chunkPrefabs;
     public List<Chunk> chunks = new List<Chunk>();
 
     private Coroutine tickCoroutine;
@@ -43,19 +44,23 @@ public class WorldManager : MonoBehaviour
         {
             for (int z = -worldSizeRadius; z <= worldSizeRadius; z++)
             {
-                float height = Mathf.RoundToInt(MathUtils.Random01(x, z, seed)) * 2.5f;
-                if (x == 0 && z == 0)
-                    height = 0;
+                float r = MathUtils.Random01(x, z, seed);
+
+                GameObject chunkPrefab;
+                if (r < 0.75f)
+                    chunkPrefab = chunkPrefabs[0];
+                else
+                    chunkPrefab = chunkPrefabs[1];
                 
                 GameObject newChunk = Instantiate(chunkPrefab, transform);
 
                 Chunk chunk = newChunk.GetComponent<Chunk>();
                 chunk.chunkPosition = new Vector2Int(x, z);
-                chunk.InitializeChunk(0,height);
+                chunk.InitializeChunk(0,chunk.height);
 
                 Vector3 chunkWorldPosition = new Vector3(
                     chunk.chunkPosition.x * (int)Chunk.CHUNK_SIZE,
-                    height,
+                    chunk.height,
                     chunk.chunkPosition.y * (int)Chunk.CHUNK_SIZE
                 );
 
@@ -80,6 +85,12 @@ public class WorldManager : MonoBehaviour
         return null;
     }
 
+    public void DestroyCellObject(Vector3 worldPosition)
+    {
+        Chunk chunk = GetChunk(worldPosition);
+        chunk.RemoveCellBuilding(chunk.GetCellCoords(worldPosition));
+    }
+    
     // ---------------- TICK SYSTEM ----------------
 
     public void StartTicks()

@@ -57,6 +57,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6771118ea100a12429a4bf6e050342e0, type: 3}
+--- !u!198 &3374991267107914946 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 573354701885711479, guid: 6771118ea100a12429a4bf6e050342e0, type: 3}
+  m_PrefabInstance: {fileID: 2964098343911940277}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4298338631862903327 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1334283246220280490, guid: 6771118ea100a12429a4bf6e050342e0, type: 3}
@@ -166,6 +171,8 @@ MonoBehaviour:
   resourceResourceItem: {fileID: 11400000, guid: bf9f508924ac521428150b4a1880534b, type: 2}
   hitSound: HitHighPitch
   audioMixerGroup: {fileID: -6777477878817391457, guid: 6ded74007eb3af64eb2b633b694b6226, type: 2}
+  hitParticleSystem: {fileID: 3374991267107914946}
+  breakParticleSystem: {fileID: 0}
 --- !u!136 &3572104708885221299
 CapsuleCollider:
   m_ObjectHideFlags: 0

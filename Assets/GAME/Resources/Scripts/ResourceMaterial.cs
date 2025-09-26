@@ -11,23 +11,48 @@ public class ResourceMaterial : MonoBehaviour
     public ResourceItem resourceResourceItem;
     public string hitSound;
     public AudioMixerGroup audioMixerGroup;
+    [Space]
+    public ParticleSystem hitParticleSystem;
+    public ParticleSystem breakParticleSystem;
     
-    ParticleSystem ps;
+    public Action onResourceDestroyed;
+    
     Material material;
     Sequence bounceTweener = null;
     Sequence shineTweener = null;
+    bool canHarvest = true;
     
     private void Awake()
     {
         material = GetComponent<MeshRenderer>().materials[1];
         material.SetTexture("_Texture2D",GetComponent<MeshRenderer>().materials[0].GetTexture("_BaseMap"));
-        
-        ps = GetComponentInChildren<ParticleSystem>();
     }
 
     public void HarvestMaterial(int damage)
     {
+        if(canHarvest == false)
+            return;
+        
         resourceHealth -= damage;
+
+        if (resourceHealth <= 0)
+        {
+            onResourceDestroyed?.Invoke();
+            canHarvest = false;
+            
+            bounceTweener.Kill();
+            breakParticleSystem.Play();
+            breakParticleSystem.transform.parent = null;
+            transform.DOShakeScale(0.1f, Vector3.up).onComplete += () =>
+            {
+                transform.DOScale(0, 0.1f).onComplete += () =>
+                {
+                    Destroy(hitParticleSystem, 5f);
+                    WorldManager.Instance.DestroyCellObject(transform.position);
+                };
+            };
+        }
+        
         AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)
             .Volume(1f)
             .PitchVariation(0.25f)
@@ -35,9 +60,9 @@ public class ResourceMaterial : MonoBehaviour
             .AudioMixerGroup(audioMixerGroup)
             .Play();
         
-        if (ps)
+        if (hitParticleSystem != null)
         {
-            ps.Play();
+            hitParticleSystem.Play();
         }
         
         if (shineTweener != null)
@@ -53,13 +78,14 @@ public class ResourceMaterial : MonoBehaviour
             .OnComplete(() => shineTweener = null);
 
         shineTweener.Restart();
-
-
         shineTweener.Restart(); 
     }
 
     public void BounceObject()
     {
+        if(!canHarvest)
+            return;
+        
         if (bounceTweener == null)
         {
             bounceTweener = DOTween.Sequence();

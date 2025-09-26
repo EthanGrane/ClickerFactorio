@@ -99,6 +99,8 @@ MonoBehaviour:
   resourceResourceItem: {fileID: 11400000, guid: 68b4aa252062a6a4ba2ea3392c865f4d, type: 2}
   hitSound: Hit
   audioMixerGroup: {fileID: -6777477878817391457, guid: 6ded74007eb3af64eb2b633b694b6226, type: 2}
+  hitParticleSystem: {fileID: 4084855244184975937}
+  breakParticleSystem: {fileID: 0}
 --- !u!136 &4305755005449885228
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -187,5 +189,10 @@ PrefabInstance:
 --- !u!4 &3296906132878843036 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1334283246220280490, guid: 6771118ea100a12429a4bf6e050342e0, type: 3}
+  m_PrefabInstance: {fileID: 4558950296654175798}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &4084855244184975937 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 573354701885711479, guid: 6771118ea100a12429a4bf6e050342e0, type: 3}
   m_PrefabInstance: {fileID: 4558950296654175798}
   m_PrefabAsset: {fileID: 0}

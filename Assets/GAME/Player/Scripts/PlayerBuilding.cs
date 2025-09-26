@@ -138,7 +138,7 @@ public class PlayerBuilding : MonoBehaviour
                     CellObject placed = chunk.PlaceCellObject(cellPosition, building);
                     if (placed != null)
                     {
-                        GameManager.Instance.AddMoney(-buildingCost);
+                        GameManager.Instance.RemoveMoney(buildingCost);
                         lastObjectsBuilded.Add(placed);
                     }
                 }
@@ -150,6 +150,7 @@ public class PlayerBuilding : MonoBehaviour
     {
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, chunkLayerMask))
         {
+
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
             Vector2Int cellPosition = chunk.GetCellCoords(hit.point);
 
@@ -158,7 +159,7 @@ public class PlayerBuilding : MonoBehaviour
 
             if (IsSnappedPosition(cellPosition))
             {
-                chunk.RemoveCellBuilding(cellPosition);
+                WorldManager.Instance.DestroyCellObject(hit.point);
             }
         }
     }

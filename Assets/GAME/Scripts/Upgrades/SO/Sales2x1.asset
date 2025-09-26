@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Sales2x1
   m_EditorClassIdentifier: 
   upgradeName: Sales! 2x1
-  upgradeDescription: 
+  upgradeDescription: Two clicks for the price of one? What a deal!
   upgradeType: 1
   value: 1
+  upgradeCost: 100

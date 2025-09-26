@@ -35,10 +35,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Player Money
-    public void AddMoney(float amount)
+    public void RemoveMoney(float amount)
     {
-        float finalAmount = GetUpgradesBonus(amount);
+        amount = Mathf.Abs(amount);
+        SetPlayerMoney(playerMoney - (int)(amount));
+    }
+
+    // Player Money
+    public void AddMoney(float amount, bool useUpgrades = true)
+    {
+        float finalAmount = Mathf.Abs(amount);
+        if(useUpgrades)
+            finalAmount = GetUpgradesBonus(amount);
         SetPlayerMoney(playerMoney + (int)(finalAmount));
     }
     public int GetPlayerMoney() { return playerMoney; }

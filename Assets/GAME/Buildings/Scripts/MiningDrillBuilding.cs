@@ -57,8 +57,8 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
                             if(!ps.isPlaying)
                                 ps.Play();
                             
-                            harvestMaterial.HarvestMaterial(1);
                             harvestMaterial.BounceObject();
+                            harvestMaterial.HarvestMaterial(1);
                             inventory.AddItemToInventory(harvestMaterial.resourceResourceItem);
                         }
                         else
