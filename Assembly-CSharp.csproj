@@ -51,6 +51,7 @@
     <Compile Include="Assets\GAME\Scripts\MathUtils.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\MiningDrillBuilding.cs" />
     <Compile Include="Assets\TODO\ToDo_SO.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\Utility\ButtonEvents.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMover.cs" />
     <Compile Include="Assets\GAME\Scripts\Upgrades\Upgrade.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />

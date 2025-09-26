@@ -1,48 +1,68 @@
-using System;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UpgradeButton : MonoBehaviour
 {
-    Button upgradeButton;
+    public Button upgradeButton;
     public Upgrade upgrade;
+    public UpgradeButton nextUpgradeButton;
     
     UpgradeController upgradeController;
+    ButtonEvents buttonEvents;
 
-    private void OnEnable()
+    private void Awake()
     {
-        Upgrade[] upgrades = GameManager.Instance.GetUpgrades();
-        if (upgrades.ToList().Contains(upgrade))
-        {
-            DisableButton();
-        }
-
         if (upgradeButton == null)
-        {
             upgradeButton = GetComponentInChildren<Button>();
-            upgradeButton.onClick.AddListener(UpgradeButtonClicked);
-        }
     }
 
-    private void OnValidate()
+    private void Start()
     {
-        if(upgrade != null)
-            gameObject.name = "Upgrade_" + upgrade.name;
+        // Ocultamos todos los upgrades al inicio
+        gameObject.SetActive(false);
+
+        // Si es el primero de la cadena, lo mostramos y lo desbloqueamos
+        if (IsFirstUpgrade())
+        {
+            gameObject.SetActive(true);
+            upgradeButton.interactable = true;
+        }
         else
-            gameObject.name = "Upgrade_null";
+        {
+            upgradeButton.interactable = false;
+        }
+
+        // Eventos hover
+        if (buttonEvents == null)
+        {
+            buttonEvents = GetComponentInChildren<ButtonEvents>();
+            buttonEvents.onPointerEnter += (PointerEventData e) =>
+            {
+                upgradeController.SelectUpgradesHint(upgrade);
+                upgradeController.ShowUpgradeHint();
+            };
+
+            buttonEvents.onPointerExit += (PointerEventData e) =>
+            {
+                upgradeController.HideUpgradeHint();
+            };
+        }
+
+        // Evento click
+        upgradeButton.onClick.AddListener(UpgradeButtonClicked);
     }
 
     void UpgradeButtonClicked()
     {
-        upgradeController.SelectUpgradesHint(upgrade, this);
-        
-        Upgrade[] upgrades = GameManager.Instance.GetUpgrades();
-        if (upgrades.ToList().Contains(upgrade))
-        {
-            DisableButton();
-        }
+        upgradeController.BuyUpgrade(this);
+
+        // Se desactiva este botón
+        DisableButton();
+
+        // Se activa y muestra el siguiente en la cadena
+        if (nextUpgradeButton != null)
+            nextUpgradeButton.ShowAndEnable();
     }
     
     public void SetUpgradeController(UpgradeController upgradeController)
@@ -53,5 +73,22 @@ public class UpgradeButton : MonoBehaviour
     public void DisableButton()
     {
         upgradeButton.interactable = false;
+    }
+
+    public void EnableButton()
+    {
+        upgradeButton.interactable = true;
+    }
+
+    public void ShowAndEnable()
+    {
+        gameObject.SetActive(true);
+        EnableButton();
+    }
+
+    bool IsFirstUpgrade()
+    {
+        // Si no tiene un "anterior", lo consideramos el primero
+        return transform.GetSiblingIndex() == 0;
     }
 }
