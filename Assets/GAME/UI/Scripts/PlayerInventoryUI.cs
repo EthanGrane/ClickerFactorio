@@ -13,10 +13,14 @@ public class PlayerInventoryUI : MonoBehaviour
     GameObject[] inventoryItems;
 
     public ResourceItem[] resourceItemsOrder;
-    
-    private void Start()
+
+    private void Awake()
     {
         playerInventory = FindFirstObjectByType<PlayerInventory>();
+    }
+
+    private void Start()
+    {
         playerInventory.inventory.OnItemAdded += ()=>
         {
             Debug.Log("OnItemAdded");
