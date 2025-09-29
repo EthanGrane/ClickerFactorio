@@ -24,21 +24,6 @@ public class Chunk : MonoBehaviour
             for (int z = 0; z < CHUNK_CELL_SIZE; z++)
                 cellData[x, z] = null;
 
-        // Generamos algunos objetos en el centro del chunk
-        if (chunkPosition == Vector2Int.zero)
-        {
-            int start = (CHUNK_CELL_SIZE / 2) - 2;
-            int end = (CHUNK_CELL_SIZE / 2) + 2;
-            for (int x = start; x < end; x++)
-            for (int z = start; z < end; z++)
-            {
-                CellObject objData = new CellObject(ChunkObjectsPrefabs[0]);
-
-                cellData[x, z] = objData;
-            }
-        }
-
-
         // Spawn aleatorio de objetos
         for (int i = 0; i < 5; i++)
         {
@@ -202,29 +187,61 @@ public class Chunk : MonoBehaviour
 
         removeObject.Destroy();
         
-        if (removeObject.type == CellType.Building)
+        switch (removeObject.type)
         {
-            chunkBuildings.Remove(removeObject);
-            Destroy(removeObject.obj);
+            case CellType.Empty:
+                break;
+            case CellType.Building:
+                chunkBuildings.Remove(removeObject);
+                Destroy(removeObject.obj);
             
-            // Marca todas las celdas que ocupa como ocupadas
-            for (int x = 0; x < removeObject.size; x++)
-            for (int z = 0; z < removeObject.size; z++)
-            {
-                int cx = removeObject.position.x;
-                int cz = removeObject.position.y;
-                int size = removeObject.size;
-
-                switch(removeObject.rotation % 4)
+                // Marca todas las celdas que ocupa como ocupadas
+                Debug.Log($"Removing {removeObject.type} at {removeObject.position} size={removeObject.size} rot={removeObject.rotation}");
+                for (int x = 0; x < removeObject.size; x++)
+                for (int z = 0; z < removeObject.size; z++)
                 {
-                    case 0: cx += x; cz += z; break;                    // 0°
-                    case 1: cx += z; cz += (size - 1 - x); break;      // 90°
-                    case 2: cx += (size - 1 - x); cz += (size - 1 - z); break; // 180°
-                    case 3: cx += (size - 1 - z); cz += x; break;      // 270°
-                }
+                    int cx = removeObject.position.x;
+                    int cz = removeObject.position.y;
+                    int size = removeObject.size;
 
-                cellData[cx, cz] = null;
-            }
+                    switch(removeObject.rotation % 4)
+                    {
+                        case 0: cx += x; cz += z; break;
+                        case 1: cx += z; cz += (size - 1 - x); break;
+                        case 2: cx += (size - 1 - x); cz += (size - 1 - z); break;
+                        case 3: cx += (size - 1 - z); cz += x; break;
+                    }
+
+                    Debug.Log($"Clearing cellData[{cx},{cz}]");
+                    cellData[cx, cz] = null;
+                }
+                break;
+            case CellType.Resource:
+                
+                chunkBuildings.Remove(removeObject);
+                Destroy(removeObject.obj);
+            
+                // Marca todas las celdas que ocupa como ocupadas
+                for (int x = 0; x < removeObject.size; x++)
+                for (int z = 0; z < removeObject.size; z++)
+                {
+                    int cx = removeObject.position.x;
+                    int cz = removeObject.position.y;
+                    int size = removeObject.size;
+
+                    switch(removeObject.rotation % 4)
+                    {
+                        case 0: cx += x; cz += z; break;
+                        case 1: cx += z; cz += (size - 1 - x); break;
+                        case 2: cx += (size - 1 - x); cz += (size - 1 - z); break;
+                        case 3: cx += (size - 1 - z); cz += x; break;
+                    }
+
+                    cellData[cx, cz] = null;
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         
         return removeObject;

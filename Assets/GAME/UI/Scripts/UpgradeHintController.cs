@@ -11,8 +11,9 @@ public class UpgradeHintController : MonoBehaviour
 
     private Dictionary<UpgradeType, string> upgradeMap = new Dictionary<UpgradeType, string>
     {
-        { UpgradeType.ClickValue, "+? Click" },
-        { UpgradeType.ClickMultiplier, "+? Click Multiplier" },
+        { UpgradeType.ClickDamage, "+? Click Damage" },
+        { UpgradeType.ClickDamageMultiplier, "+? Click Damage Multiplier" },
+        { UpgradeType.MoneyMultiplier, "+? Money Multiplier" },
     };
 
     public void SetupUpgradeHint(Upgrade upgrade)

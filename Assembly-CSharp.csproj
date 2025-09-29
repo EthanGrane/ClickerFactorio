@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Assets\GAME\World\Scripts\Chunk.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\UpgradeHintController.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\InventoryMenuController.cs" />
     <Compile Include="Assets\GAME\Scripts\MathUtils.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\MiningDrillBuilding.cs" />
     <Compile Include="Assets\TODO\ToDo_SO.cs" />
@@ -55,9 +56,11 @@
     <Compile Include="Assets\GAME\World\Scripts\ICellObject.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMover.cs" />
     <Compile Include="Assets\GAME\Scripts\Upgrades\Upgrade.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\HarvestResource_UI.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />
     <Compile Include="Assets\GAME\Resources\Scripts\ResourceMaterial.cs" />
     <Compile Include="Assets\GAME\Scripts\AudioManager.cs" />
+    <Compile Include="Assets\GAME\UI\Scripts\PlayerInventoryUI.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\CrateBuilding.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
     <Compile Include="Assets\GAME\World\Scripts\DayNightCycle.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\ConveyorBuilding.cs" />
+    <Compile Include="Assets\GAME\Player\Scripts\PlayerInventory.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\InventoryTooltip.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMouse\PlayerMouse.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\MarketBuilding.cs" />

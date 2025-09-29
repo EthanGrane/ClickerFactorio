@@ -1,12 +1,46 @@
+using System;
+using System.Collections.Generic;
+using Mono.Cecil;
 using UnityEngine;
 
 public class PlayerHarvest : MonoBehaviour
 {
-    public float harvestDamage = 1;
+    PlayerInventory inventory;
+    
     public float harvestDistance = 5;
     public LayerMask ResourceLayerMask;
 
+    Dictionary<Upgrade, Sprite> mouseUpgradesTexturesDictionary = new Dictionary<Upgrade, Sprite>();
+
+    public Upgrade[] MouseUpgrades;
+    public Sprite[] mouseSprites;
+    public SpriteRenderer mouseRenderer;
+    
     ResourceMaterial lastResourceMaterial = null;
+    
+    public Action<ResourceMaterial> OnHarvestResourceMaterial;
+
+    private void Start()
+    {
+        mouseUpgradesTexturesDictionary = new Dictionary<Upgrade, Sprite>();
+
+        for (int i = 0; i < MouseUpgrades.Length && i < mouseSprites.Length; i++)
+        {
+            mouseUpgradesTexturesDictionary[MouseUpgrades[i]] = mouseSprites[i];
+        }
+
+        GameManager.Instance.OnPlayerBoughtUpgrade += upgrade =>
+        {
+            if (mouseUpgradesTexturesDictionary.TryGetValue(upgrade, out Sprite sprite))
+            {
+                mouseRenderer.sprite = sprite;
+            }
+            else
+            {
+                Debug.LogWarning($"No sprite found for upgrade {upgrade}");
+            }
+        };
+    }
 
     public void HandleHarvest()
     {
@@ -17,10 +51,11 @@ public class PlayerHarvest : MonoBehaviour
             {
                 if (hit.transform.GetComponent<ResourceMaterial>())
                 {
+                    int harvestDamage = GameManager.Instance.GetClickDamage();
                     hit.transform.GetComponent<ResourceMaterial>().HarvestMaterial(Mathf.FloorToInt(harvestDamage));
                     lastResourceMaterial = hit.transform.GetComponent<ResourceMaterial>();
                     
-                    GameManager.Instance.AddMoney(lastResourceMaterial.resourceResourceItem.itemValue);
+                    OnHarvestResourceMaterial?.Invoke(lastResourceMaterial);
                 }
             }
         }

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af27afacaceb58c4d9100aaf247f3ed2, type: 3}
   m_Name: MyFirstMultiplier
   m_EditorClassIdentifier: 
-  upgradeName: My First Multiplier :)
-  upgradeDescription: "Your first time? (\u0360\u2256 \u035C\u0296\u0360\u2256)"
+  upgradeName: My First Multiplier
+  upgradeDescription: "Your first time?\\n (\u0360\u2256 \u035C\u0296\u0360\u2256)"
   upgradeType: 0
   value: 1
-  upgradeCost: 5000
+  upgradeCost: 7500

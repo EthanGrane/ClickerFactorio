@@ -7,7 +7,7 @@ public class PlayerMoneyUI : MonoBehaviour
     
     public void Start()
     {
-        GameManager.Instance.onPlayerMoneyChanged += (int amount) =>
+        GameManager.Instance.OnPlayerMoneyChanged += (int amount) =>
         {
             playerMoneyText.text = amount.ToString();
         };

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class EditorModMenu : MonoBehaviour
 {
-    private Rect windowRect = new Rect(20, Screen.height - 20, 250, 300);
+    private Rect windowRect = new Rect(Screen.width-300, Screen.height - 20, 250, 300);
     private bool isMinimized = true;
 
     private List<(string label, System.Action action)> buttons;
@@ -43,15 +43,17 @@ public class EditorModMenu : MonoBehaviour
                 }
             }
             windowRect.height = 300;
+            windowRect.position = new Vector2(windowRect.x, Screen.height - 300);
 
             GUILayout.EndVertical();
         }
         else
         {
-            windowRect.height = 35;
+            windowRect.height = 50;
+            windowRect.position = new Vector2(windowRect.x, Screen.height - 25);
         }
 
         // Hacer la ventana arrastrable
-        GUI.DragWindow(new Rect(0, 0, Screen.width, 20));
+        // GUI.DragWindow(new Rect(0, 0, Screen.width, 20));
     }
 }

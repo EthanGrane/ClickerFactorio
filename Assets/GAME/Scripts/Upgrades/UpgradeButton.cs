@@ -52,7 +52,7 @@ public class UpgradeButton : MonoBehaviour
         // Evento click
         upgradeButton.onClick.AddListener(UpgradeButtonClicked);
     }
-
+    
     void UpgradeButtonClicked()
     {
         if (upgradeController.BuyUpgrade(this))

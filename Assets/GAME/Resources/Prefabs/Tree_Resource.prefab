@@ -95,7 +95,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 386e16229dca1224781672f35c5516c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resourceHealth: 500
+  resourceName: Tree
+  resourceHealth: 150
+  currentResourceHealth: 100
   resourceResourceItem: {fileID: 11400000, guid: 68b4aa252062a6a4ba2ea3392c865f4d, type: 2}
   hitSound: Hit
   audioMixerGroup: {fileID: -6777477878817391457, guid: 6ded74007eb3af64eb2b633b694b6226, type: 2}

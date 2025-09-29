@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerBuilding : MonoBehaviour
 {
+    public Action<int> onCurrentInventoryBuildingChanged;
+    
     public int buildingRotation = 0;
     public Material ghostMaterial;
     public Material obstructedMaterial;
@@ -86,6 +88,7 @@ public class PlayerBuilding : MonoBehaviour
     {
         HideAllBuildingGhost();
         currentBuilding = new CellObject(newBuilding);
+        onCurrentInventoryBuildingChanged?.Invoke(currentInventoryIndex);
     }
 
     public void ShowGrid()

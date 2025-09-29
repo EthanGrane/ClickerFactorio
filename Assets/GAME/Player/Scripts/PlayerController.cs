@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
 {
     public PlayerMode playerMode = PlayerMode.harvest;
     
+    public GameObject handObject;
+    public GameObject buildingMenu;
+    
     PlayerBuilding playerBuilding;
     PlayerHarvest playerHarvest;
 
@@ -15,6 +18,7 @@ public class PlayerController : MonoBehaviour
     {
         playerBuilding = gameObject.GetComponent<PlayerBuilding>();
         playerHarvest = gameObject.GetComponent<PlayerHarvest>();
+        ChangePlayerMode(playerMode);
     }
 
     void Update()
@@ -43,9 +47,13 @@ public class PlayerController : MonoBehaviour
                 playerBuilding.StopBuilding();
                 playerBuilding.HideAllBuildingGhost();
                 playerBuilding.HideGrid();
+                handObject.SetActive(true);
+                buildingMenu.SetActive(false);
                 break;
             case PlayerMode.building:
                 playerBuilding.ShowGrid();
+                handObject.SetActive(false);
+                buildingMenu.SetActive(true);
                 break;
         }        
         

@@ -8,19 +8,11 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [SerializeField] int playerMoney = 0;
-
-    // Drill Money
-    // Click Money
-    public float moneyBonus = 0f;
-    public float moneyMultiplier = 1f;
-    
-    // Damage
-    public float playerHarvestDamage = 1f;
-    public float playerHarvestDamageMultiplier = 1f;
     
     public List<Upgrade> upgrades;
     
-    public Action<int> onPlayerMoneyChanged;
+    public Action<int> OnPlayerMoneyChanged;
+    public Action<Upgrade> OnPlayerBoughtUpgrade;
     
     void Awake()
     {
@@ -54,7 +46,7 @@ public class GameManager : MonoBehaviour
     public void SetPlayerMoney(int amount)
     {
         playerMoney = amount; 
-        onPlayerMoneyChanged?.Invoke(playerMoney);
+        OnPlayerMoneyChanged?.Invoke(playerMoney);
     }
 
     public float GetUpgradesBonus(float amount)
@@ -67,13 +59,9 @@ public class GameManager : MonoBehaviour
         {
             switch (upgrades[i].upgradeType)
             {
-                case UpgradeType.ClickMultiplier:
+                case UpgradeType.MoneyMultiplier:
                     clickMultiplier += upgrades[i].value;
                     break;
-                case UpgradeType.ClickValue:
-                    clickBonus += upgrades[i].value;
-                    break;
-                
                 case UpgradeType.DrillMultiplier:
                     break;
                 case UpgradeType.DrillValue:
@@ -84,6 +72,29 @@ public class GameManager : MonoBehaviour
         return (finalAmount + clickBonus) * clickMultiplier;
     }
 
+    public int GetClickDamage()
+    {
+        int baseDamage = 1;
+        int flatBonus = 0;
+        int multiplier = 1;
+
+        for (int i = 0; i < upgrades.Count; i++)
+        {
+            switch (upgrades[i].upgradeType)
+            {
+                case UpgradeType.ClickDamage:
+                    flatBonus += (int)upgrades[i].value;
+                    break;
+                case UpgradeType.ClickDamageMultiplier:
+                    multiplier *= (int)upgrades[i].value;
+                    break;
+            }
+        }
+
+        return (baseDamage + flatBonus) * multiplier;
+    }
+
+
     public Upgrade[] GetUpgrades()
     {
         return upgrades.ToArray();
@@ -92,6 +103,9 @@ public class GameManager : MonoBehaviour
     public void AddUpgrade(Upgrade upgrade)
     {
         if(!upgrades.Contains(upgrade))
+        {
             upgrades.Add(upgrade);
+            OnPlayerBoughtUpgrade?.Invoke(upgrade);
+        }    
     }
 }

@@ -129,9 +129,8 @@ public class Slot
 {
     public int _slotSize;
     public Queue<ItemInstance> _slotItems;
-    // Debug
-    public ItemInstance[] DEBUG_slotItems;
-    [FormerlySerializedAs("_itemFilter")] public ResourceItem resourceItemFilter;
+    public int numberOfItems;
+    public ResourceItem resourceItemFilter;
     [System.NonSerialized] private Inventory _inventoryReference;
 
     public Slot(Inventory slotInventoryReference ,int slotSize)
@@ -145,8 +144,6 @@ public class Slot
     // Añade un resourceItem al slot siempre que el resourceItem sea igual al resourceItem preferente del inventario
     public void AddItem(ResourceItem resourceItem)
     {
-        DEBUG_slotItems = _slotItems.ToArray();
-
         // Si el inventario esta vacio hay que Inicializar de nuevo el slot permitiendo colocar otgro tipo de resourceItem,
         // el codigo no soporta que el slot una vez vacio pueda tener otro resourceItem
         if (resourceItemFilter == null)
@@ -168,30 +165,26 @@ public class Slot
         }
         
         _slotItems.Enqueue(new ItemInstance(resourceItem,1));
-        
-        DEBUG_slotItems = _slotItems.ToArray();
+        numberOfItems = _slotItems.Count;
     }
     
     // Quita el ultimo resourceItem de la queue (Como todos los items dentro del slot son iguales con quitar el ultimo bastara.)
     public ResourceItem RemoveItem()
     {
-        DEBUG_slotItems = _slotItems.ToArray();
 
         if (_slotItems == null)
         {
             Debug.LogWarning("ResourceItem is null");
-            DEBUG_slotItems = null;
             return null;
         }        
         if(_slotItems.Count == 0)
         {
             Debug.LogWarning("ResourceItem is empty");
-            DEBUG_slotItems = null;
             return null;
         }        
         
         _slotItems.Dequeue();
-        DEBUG_slotItems = _slotItems.ToArray();
+        numberOfItems = _slotItems.Count;
         
         return resourceItemFilter;
     }
@@ -228,7 +221,6 @@ public class Slot
 
     public Inventory GetInventory()
     {
-        DEBUG_slotItems = _slotItems.ToArray();
         return _inventoryReference;
     }
 

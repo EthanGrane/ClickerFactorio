@@ -7,7 +7,9 @@ using UnityEngine.Serialization;
 
 public class ResourceMaterial : MonoBehaviour
 {
+    public string resourceName;
     public int resourceHealth = 100;
+    [HideInInspector] public int currentResourceHealth = 100;
     public ResourceItem resourceResourceItem;
     public string hitSound;
     public AudioMixerGroup audioMixerGroup;
@@ -26,6 +28,7 @@ public class ResourceMaterial : MonoBehaviour
     {
         material = GetComponent<MeshRenderer>().materials[1];
         material.SetTexture("_Texture2D",GetComponent<MeshRenderer>().materials[0].GetTexture("_BaseMap"));
+        currentResourceHealth = resourceHealth;
     }
 
     public void HarvestMaterial(int damage)
@@ -33,24 +36,31 @@ public class ResourceMaterial : MonoBehaviour
         if(canHarvest == false)
             return;
         
-        resourceHealth -= damage;
+        currentResourceHealth -= damage;
 
-        if (resourceHealth <= 0)
+        if (currentResourceHealth <= 0)
         {
-            onResourceDestroyed?.Invoke();
             canHarvest = false;
-            
+
+            onResourceDestroyed?.Invoke();
+            GameManager.Instance.AddMoney(resourceHealth);
+
             bounceTweener.Kill();
-            breakParticleSystem.Play();
-            breakParticleSystem.transform.parent = null;
+            if (breakParticleSystem != null)
+            {
+                breakParticleSystem.Play();
+                breakParticleSystem.transform.parent = null;
+            }
+
             transform.DOShakeScale(0.1f, Vector3.up).onComplete += () =>
             {
                 transform.DOScale(0, 0.1f).onComplete += () =>
                 {
                     Destroy(hitParticleSystem, 5f);
-                    WorldManager.Instance.DestroyCellObject(transform.position);
                 };
             };
+            
+            WorldManager.Instance.DestroyCellObject(transform.position);
         }
         
         AudioManager.Instance.PlayOneShot3D(hitSound,transform.position)

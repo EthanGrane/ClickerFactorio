@@ -34,6 +34,9 @@ public class WorldManager : MonoBehaviour
 
     void Start()
     {
+        if(seed == 0)
+            seed = Random.Range(int.MinValue, int.MaxValue);
+        
         InitializeWorld();
         StartTicks();
     }

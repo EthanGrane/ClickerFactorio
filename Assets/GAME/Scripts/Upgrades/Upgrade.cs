@@ -15,8 +15,9 @@ public class Upgrade : ScriptableObject
 
 public enum UpgradeType
 {
-    ClickMultiplier,
-    ClickValue,
+    MoneyMultiplier,
+    ClickDamage,
+    ClickDamageMultiplier,
     DrillMultiplier,
     DrillValue,
 }
