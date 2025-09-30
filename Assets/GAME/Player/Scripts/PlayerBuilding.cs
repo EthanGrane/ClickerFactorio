@@ -204,8 +204,15 @@ public class PlayerBuilding : MonoBehaviour
             
             if(currentMoney < buildingCost)
                 canPlace = false;
-            
-            ghostObjects[currentInventoryIndex].GetComponent<MeshRenderer>().material = canPlace ? ghostMaterial : obstructedMaterial;
+
+            if (canPlace)
+            {
+                ghostObjects[currentInventoryIndex].GetComponent<MeshRenderer>().material = ghostMaterial;
+            }
+            else
+            {
+                ghostObjects[currentInventoryIndex].transform.position = Vector3.up * -100;
+            }
         }
         else
         {

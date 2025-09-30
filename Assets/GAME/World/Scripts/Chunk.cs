@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,18 +14,36 @@ public class Chunk : MonoBehaviour
     public List<CellObject> chunkBuildings = new List<CellObject>();
     public float height = 0;
 
+    private int seed;
     public static float CHUNK_SIZE = 10f;
     public static int CHUNK_CELL_SIZE = 8;
     public static float CHUNK_SPACING(){return CHUNK_SIZE/CHUNK_CELL_SIZE;}
 
     public void InitializeChunk(int seed = 0, float height = 0)
     {
+        this.seed = seed;
         this.height = height;
         // Inicializamos la grid vacía
         for (int x = 0; x < CHUNK_CELL_SIZE; x++)
             for (int z = 0; z < CHUNK_CELL_SIZE; z++)
                 cellData[x, z] = null;
+        
+        for (int x = 0; x < 3; x++)
+            SpawnRandomResource();
+        
+        StartCoroutine(SpawnRandomResourceCoroutine());
+    }
 
+    public CellObject GetCellObject(Vector2Int cellPos)
+    {
+        if(cellPos.x < 0 || cellPos.x >= CHUNK_CELL_SIZE || cellPos.y < 0 || cellPos.y >= CHUNK_CELL_SIZE)
+            return null;
+
+        return cellData[cellPos.x, cellPos.y];
+    }
+
+    void SpawnRandomResource()
+    {
         // Spawn aleatorio de objetos
         for (int i = 0; i < 5; i++)
         {
@@ -34,15 +54,18 @@ public class Chunk : MonoBehaviour
             if (!cellPos.HasValue) continue;
 
             PlaceCellObject(cellPos.Value, objData);
+            break;
         }
     }
 
-    public CellObject GetCellObject(Vector2Int cellPos)
+    IEnumerator SpawnRandomResourceCoroutine()
     {
-        if(cellPos.x < 0 || cellPos.x >= CHUNK_CELL_SIZE || cellPos.y < 0 || cellPos.y >= CHUNK_CELL_SIZE)
-            return null;
-
-        return cellData[cellPos.x, cellPos.y];
+        while (true)
+        {
+            float random = UnityEngine.Random.Range(15f, 30f);
+            yield return new WaitForSeconds(random);
+            SpawnRandomResource();
+        }
     }
 
     // Función que devuelve una celda aleatoria vacía para un tamaño
@@ -92,6 +115,10 @@ public class Chunk : MonoBehaviour
 
         go.transform.rotation = Quaternion.Euler(Vector3.up * (90f * building.rotation));
         go.transform.SetParent(transform);
+
+        Vector3 objectScale = go.transform.localScale;
+        go.transform.localScale = Vector3.zero;
+        go.transform.DOScale(objectScale, 0.25f).SetEase(Ease.OutExpo);
         
         // Inicializa la data
         objData.Initialize(chunk: this, obj: go, position: pivot, rotation: building.rotation);

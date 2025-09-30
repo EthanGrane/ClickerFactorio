@@ -45,6 +45,11 @@ public class AudioManager : MonoBehaviour
         return new SoundInstance(clip, false);
     }
 
+    public SoundInstance PlayOneShot3D(AudioClip clip, Vector3 position)
+    {
+        return new SoundInstance(clip, true, position);
+    }
+    
     public SoundInstance PlayOneShot3D(string clipName, Vector3 position)
     {
         AudioClip clip = clips.Find(c => c.name == clipName);

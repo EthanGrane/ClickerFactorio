@@ -4,17 +4,19 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening; // <--- Asegúrate de tener DOTween
 
 public class HarvestResource_UI : MonoBehaviour
 {
     PlayerHarvest playerHarvest;
 
     public GameObject harvestResourceUIPanel;
-    
+
     public Image fillCircleImage;
     public TextMeshProUGUI resourceNameText;
     public TextMeshProUGUI resourceHealthText;
 
+    bool isHidden = false;
     CancellationTokenSource cts;
 
     private void Awake()
@@ -30,18 +32,28 @@ public class HarvestResource_UI : MonoBehaviour
 
     void UpdateResourceInfo(ResourceMaterial resourceMaterial)
     {
+        if (isHidden)
+        {
+            fillCircleImage.fillAmount = (float)resourceMaterial.currentResourceHealth / resourceMaterial.resourceHealth;
+        }
+
+        isHidden = false;
+
         resourceNameText.text = resourceMaterial.resourceName;
         resourceHealthText.text = resourceMaterial.currentResourceHealth.ToString();
 
-        fillCircleImage.fillAmount = resourceMaterial.currentResourceHealth > 0
-            ? Mathf.Lerp(0, 1, (float)resourceMaterial.currentResourceHealth / resourceMaterial.resourceHealth)
+        float targetFill = resourceMaterial.currentResourceHealth > 0
+            ? (float)resourceMaterial.currentResourceHealth / resourceMaterial.resourceHealth
             : 0;
 
-        if(resourceMaterial.currentResourceHealth > 0)
-            harvestResourceUIPanel.SetActive(true);
-        else
-            harvestResourceUIPanel.SetActive(false);
+        // Animar fillAmount con DOTween
+        DOTween.Kill(fillCircleImage); // Cancela cualquier tween anterior
+        fillCircleImage.DOFillAmount(targetFill, 0.1f).SetEase(Ease.OutQuad); // 0.5s de animación
 
+        // Mostrar/ocultar panel
+        harvestResourceUIPanel.SetActive(resourceMaterial.currentResourceHealth > 0);
+
+        // Cancelar cualquier hide pendiente
         cts?.Cancel();
         cts = new CancellationTokenSource();
 
@@ -54,6 +66,7 @@ public class HarvestResource_UI : MonoBehaviour
         {
             await Task.Delay(1000, token);
             harvestResourceUIPanel.SetActive(false);
+            isHidden = true;
         }
         catch (TaskCanceledException)
         {

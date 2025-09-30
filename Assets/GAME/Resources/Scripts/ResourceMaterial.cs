@@ -44,6 +44,10 @@ public class ResourceMaterial : MonoBehaviour
 
             onResourceDestroyed?.Invoke();
             GameManager.Instance.AddMoney(resourceHealth);
+            AudioManager.Instance.PlayOneShot3D("CashSFX", transform.position)
+                .PitchVariation(0.25f)
+                .Volume(0.5f)
+                .Play();
 
             bounceTweener.Kill();
             if (breakParticleSystem != null)

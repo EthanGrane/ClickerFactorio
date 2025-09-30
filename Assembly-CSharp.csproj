@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\GAME\World\Scripts\Chunk.cs" />
+    <Compile Include="Assets\GAME\World\Scripts\Visuals\Clouds.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\UpgradeHintController.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\InventoryMenuController.cs" />
     <Compile Include="Assets\GAME\Scripts\MathUtils.cs" />

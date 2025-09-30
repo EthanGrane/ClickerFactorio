@@ -47,27 +47,38 @@ public class MiningDrillBuilding : MonoBehaviour, IBuilding, IInventory
             {
                 if (cell.type == CellType.Resource)
                 {
-                    ResourceMaterial harvestMaterial = cell.obj.GetComponent<ResourceMaterial>();
-                    if (harvestMaterial)
+                    if (cell.obj != null)
                     {
-                        // Is inventory NOT full?
-                        // Is resourceItem Avaliable on inventory slots?
-                        if (inventory.isInventoryFull() == false || inventory.isItemAvaliableOnInventory(harvestMaterial.resourceResourceItem))
+                        ResourceMaterial harvestMaterial = cell.obj.GetComponent<ResourceMaterial>();
+                        if (harvestMaterial)
                         {
-                            if(!ps.isPlaying)
-                                ps.Play();
-                            
-                            harvestMaterial.BounceObject();
-                            harvestMaterial.HarvestMaterial(1);
-                            inventory.AddItemToInventory(harvestMaterial.resourceResourceItem);
-                        }
-                        else
-                        {
-                            if(ps.isPlaying)
-                                ps.Stop();
+                            // Is inventory NOT full?
+                            // Is resourceItem Avaliable on inventory slots?
+                            if (inventory.isInventoryFull() == false ||
+                                inventory.isItemAvaliableOnInventory(harvestMaterial.resourceResourceItem))
+                            {
+                                if (!ps.isPlaying)
+                                    ps.Play();
+
+                                harvestMaterial.BounceObject();
+                                harvestMaterial.HarvestMaterial(1);
+                                inventory.AddItemToInventory(harvestMaterial.resourceResourceItem);
+                            }
+                            else
+                            {
+                                if (ps.isPlaying)
+                                    ps.Stop();
+                            }
                         }
                     }
-
+                    else
+                    {
+                        SetupAffectedObjects();
+                    }
+                }
+                else
+                {
+                    SetupAffectedObjects();
                 }
             }
         }
