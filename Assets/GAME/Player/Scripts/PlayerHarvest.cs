@@ -19,10 +19,20 @@ public class PlayerHarvest : MonoBehaviour
     ResourceMaterial lastResourceMaterial = null;
     
     public Action<ResourceMaterial> OnHarvestResourceMaterial;
+    
+    [Header("Autoclicker Settings")]
+    public bool enableAutoClick = false;
+    public float autoClickRate = 3f; // clicks por segundo
+    private float autoClickTimer = 0f;
 
     private void Start()
     {
         mouseUpgradesTexturesDictionary = new Dictionary<Upgrade, Sprite>();
+
+        for (int i = 0; i < MouseUpgrades.Length && i < mouseSprites.Length; i++)
+        {
+            mouseUpgradesTexturesDictionary[MouseUpgrades[i]] = mouseSprites[i];
+        }
 
         GameManager.Instance.OnPlayerBoughtUpgrade += upgrade =>
         {
@@ -37,33 +47,66 @@ public class PlayerHarvest : MonoBehaviour
         };
     }
 
+    void Update()
+    {
+        HandleAutoClick();
+    }
+    
     public void HandleHarvest()
     {
+        
         if (Input.GetMouseButtonDown(0))
         {
-
-            if (Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out RaycastHit hit, harvestDistance))
-            {
-                if (hit.transform.GetComponent<ResourceMaterial>())
-                {
-                    int harvestDamage = GameManager.Instance.GetClickDamage();
-                    hit.transform.GetComponent<ResourceMaterial>().HarvestMaterial(Mathf.FloorToInt(harvestDamage));
-                    lastResourceMaterial = hit.transform.GetComponent<ResourceMaterial>();
-                    
-                    OnHarvestResourceMaterial?.Invoke(lastResourceMaterial);
-                }
-            }
+            enableAutoClick = true;
+            HarvestDown();
         }
 
         if (Input.GetMouseButtonUp(0))
         {
-            if (lastResourceMaterial)
-            {
-                lastResourceMaterial.BounceObject();
+            enableAutoClick = false;
+            HarvestUp();
+        }
+    }
 
-                lastResourceMaterial = null;
+    void HarvestDown()
+    {
+        if (Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out RaycastHit hit, harvestDistance))
+        {
+            if (hit.transform.GetComponent<ResourceMaterial>())
+            {
+                int harvestDamage = GameManager.Instance.GetClickDamage();
+                hit.transform.GetComponent<ResourceMaterial>().HarvestMaterial(Mathf.FloorToInt(harvestDamage));
+                lastResourceMaterial = hit.transform.GetComponent<ResourceMaterial>();
+                    
+                OnHarvestResourceMaterial?.Invoke(lastResourceMaterial);
             }
         }
-
     }
+
+    void HarvestUp()
+    {
+        if (lastResourceMaterial)
+        {
+            lastResourceMaterial.BounceObject();
+
+            lastResourceMaterial = null;
+        }
+    }
+    
+    void HandleAutoClick()
+    {
+        if (!enableAutoClick)
+        {
+            autoClickTimer = 0f;
+            return;
+        }
+        autoClickTimer += Time.deltaTime;
+
+        if (autoClickTimer >= 1f / autoClickRate)
+        {
+            autoClickTimer = 0f;
+            HarvestDown();
+        }
+    }
+
 }

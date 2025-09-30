@@ -211,9 +211,13 @@ public class UpgradeController : MonoBehaviour
                     .SetEase(Ease.InOutCirc)
                     .SetUpdate(true);
             });
+        
         DOTween.To(() => _volumeWeight, x => _volumeWeight = x, 0f, 1f)
             .SetEase(Ease.InOutCirc)
-            .SetUpdate(true);
+            .SetUpdate(true).OnComplete(() =>
+            {
+                HideAllMenu();
+            });
         
         mainSnapshot.TransitionTo(1f);
         

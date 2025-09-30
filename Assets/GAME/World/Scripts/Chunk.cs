@@ -66,7 +66,7 @@ public class Chunk : MonoBehaviour
     {
         while (true)
         {
-            float random = UnityEngine.Random.Range(3, 5);
+            float random = Random.Range(15, 30);
             yield return new WaitForSeconds(random);
             
             if(chunkResources.Count < MAX_RESOURCES_ON_CHUNK)
