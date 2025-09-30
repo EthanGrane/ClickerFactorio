@@ -91,7 +91,7 @@ public class WorldManager : MonoBehaviour
     public void DestroyCellObject(Vector3 worldPosition)
     {
         Chunk chunk = GetChunk(worldPosition);
-        chunk.RemoveCellBuilding(chunk.GetCellCoords(worldPosition));
+        chunk.RemoveCellObject(chunk.GetCellCoords(worldPosition));
     }
     
     // ---------------- TICK SYSTEM ----------------

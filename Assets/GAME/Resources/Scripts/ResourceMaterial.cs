@@ -54,6 +54,7 @@ public class ResourceMaterial : MonoBehaviour
             {
                 breakParticleSystem.Play();
                 breakParticleSystem.transform.parent = null;
+                Destroy(breakParticleSystem, breakParticleSystem.main.duration);
             }
 
             transform.DOShakeScale(0.1f, Vector3.up).onComplete += () =>

@@ -211,7 +211,7 @@ public class PlayerBuilding : MonoBehaviour
             }
             else
             {
-                ghostObjects[currentInventoryIndex].transform.position = Vector3.up * -100;
+                ghostObjects[currentInventoryIndex].GetComponent<MeshRenderer>().material = obstructedMaterial;
             }
         }
         else

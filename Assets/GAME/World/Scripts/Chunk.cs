@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Chunk : MonoBehaviour
 {
@@ -12,9 +13,11 @@ public class Chunk : MonoBehaviour
     [Space]
     public CellObject[] ChunkObjectsPrefabs;
     public List<CellObject> chunkBuildings = new List<CellObject>();
+    public List<CellObject> chunkResources = new List<CellObject>();
     public float height = 0;
 
     private int seed;
+    public static int MAX_RESOURCES_ON_CHUNK = 8;
     public static float CHUNK_SIZE = 10f;
     public static int CHUNK_CELL_SIZE = 8;
     public static float CHUNK_SPACING(){return CHUNK_SIZE/CHUNK_CELL_SIZE;}
@@ -47,13 +50,14 @@ public class Chunk : MonoBehaviour
         // Spawn aleatorio de objetos
         for (int i = 0; i < 5; i++)
         {
-            float random = MathUtils.Random01(chunkPosition.x * 1000, chunkPosition.y * 1000, seed);
+            float random = Random.Range(0f, 1f);
             CellObject objData = new CellObject(ChunkObjectsPrefabs[Mathf.FloorToInt(random * ChunkObjectsPrefabs.Length)]);
-            objData.rotation = UnityEngine.Random.Range(0, 3);
+            objData.rotation = Random.Range(0, 3);
             Vector2Int? cellPos = GetRandomEmptyCellForSize(objData.size, seed);
             if (!cellPos.HasValue) continue;
 
-            PlaceCellObject(cellPos.Value, objData);
+            CellObject cellObject = PlaceCellObject(cellPos.Value, objData);
+            chunkResources.Add(cellObject);
             break;
         }
     }
@@ -62,9 +66,11 @@ public class Chunk : MonoBehaviour
     {
         while (true)
         {
-            float random = UnityEngine.Random.Range(15f, 30f);
+            float random = UnityEngine.Random.Range(3, 5);
             yield return new WaitForSeconds(random);
-            SpawnRandomResource();
+            
+            if(chunkResources.Count < MAX_RESOURCES_ON_CHUNK)
+                SpawnRandomResource();
         }
     }
 
@@ -207,7 +213,7 @@ public class Chunk : MonoBehaviour
         return true;
     }
     
-    public CellObject RemoveCellBuilding(Vector2Int cellPos)
+    public CellObject RemoveCellObject(Vector2Int cellPos)
     {
         CellObject removeObject = cellData[cellPos.x, cellPos.y];
         if(removeObject == null) return null;
@@ -245,7 +251,7 @@ public class Chunk : MonoBehaviour
                 break;
             case CellType.Resource:
                 
-                chunkBuildings.Remove(removeObject);
+                chunkResources.Remove(removeObject);
                 Destroy(removeObject.obj);
             
                 // Marca todas las celdas que ocupa como ocupadas
