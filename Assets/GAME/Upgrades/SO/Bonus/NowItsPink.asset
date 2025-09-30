@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af27afacaceb58c4d9100aaf247f3ed2, type: 3}
-  m_Name: Sales2x1
-  m_EditorClassIdentifier: 
-  upgradeName: Sales! 2x1
-  upgradeDescription: Two clicks for the price of one? What a deal!
+  m_Script: {fileID: 11500000, guid: 594ef4b5e57c4b3197e08b51ddb1f0ed, type: 3}
+  m_Name: NowItsPink
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeBonus
+  upgradeName: Now it's pink?
+  upgradeDescription: Does this make sense?
+  upgradeCost: 5000
   upgradeType: 1
   value: 1
-  upgradeCost: 100

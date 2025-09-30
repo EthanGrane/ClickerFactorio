@@ -14,6 +14,7 @@ public class EditorModMenu : MonoBehaviour
         {
             ("+100 Money", () => GameManager.Instance.AddMoney(100)),
             ("X2 Money", () => GameManager.Instance.SetPlayerMoney(GameManager.Instance.GetPlayerMoney() * 2)),
+            ("Unlock All", () => {GameManager.Instance.unlockedBuildings = GameManager.Instance.allBuildings;}),
         };
     }
 

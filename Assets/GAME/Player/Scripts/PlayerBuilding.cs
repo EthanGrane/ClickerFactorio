@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PlayerBuilding : MonoBehaviour
 {
-    public Action<int> onCurrentInventoryBuildingChanged;
     
     public int buildingRotation = 0;
     public Material ghostMaterial;
@@ -13,24 +12,28 @@ public class PlayerBuilding : MonoBehaviour
     public Material worldGridMaterial;
     public LayerMask chunkLayerMask;
     
-    public BuildingObject[] inventoryBuildingObjects = new BuildingObject[10];
+    BuildingObject[] inventoryBuildingObjects = new BuildingObject[10];
     GameObject[] ghostObjects = new GameObject[10];
-    private int currentInventoryIndex = 0;
+    private int currentInventoryIndex = -1;
     
     Vector2Int iBuildPos = -Vector2Int.one;
     Vector2Int iBuildDirection = -Vector2Int.one;
     List<CellObject> lastObjectsBuilded = new List<CellObject>();
-    CellObject currentBuilding;
-
+    public BuildingObject currentBuilding;
+    
+    public Action OnStartBuilding;
+    public Action<BuildingObject> onCurrentBuildingChanged;
+    public Action OnStopBuilding;
+    
     void Start()
     {
         HideAllBuildingGhost();
         HideGrid();
-        ChangeCurrentBuilding(inventoryBuildingObjects[currentInventoryIndex]);
     }
     
     public void HandleBuilding()
     {
+        
         // ***** RESET *****
         // On Mouse up reset snap
         if (Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1))
@@ -43,7 +46,8 @@ public class PlayerBuilding : MonoBehaviour
         // ***** Build ***** 
         if (Input.GetMouseButton(0))
         {
-            Build(currentBuilding);
+            if(currentBuilding)
+                Build(new CellObject(currentBuilding));
         }       
         
         // ***** Rotate ***** 
@@ -61,39 +65,58 @@ public class PlayerBuilding : MonoBehaviour
                 obj.RotateObject(rotation: buildingRotation);
 
         HandleInventory();
-        ShowBuildingGhost(currentBuilding);
+        if(currentBuilding)
+            ShowBuildingGhost(new CellObject(currentBuilding));
     }
 
     void HandleInventory()
     {
-        for (int i = 0; i <= 9; i++)
+        for (int key = 0; key <= 9; key++)
         {
-            if (Input.GetKeyDown(KeyCode.Alpha0 + i))
+            if (Input.GetKeyDown(KeyCode.Alpha0 + key))
             {
-                if (i < inventoryBuildingObjects.Length)
+                int targetIndex = (key == 0) ? inventoryBuildingObjects.Length - 1 : key - 1;
+
+                if (currentBuilding != null && currentInventoryIndex == targetIndex)
                 {
-                    currentInventoryIndex = i - 1;
-                    
-                    if(currentInventoryIndex < 0)
-                        currentInventoryIndex = 0;
-                    if (currentInventoryIndex >= 9)
-                        currentInventoryIndex = 9;
-                    
-                    ChangeCurrentBuilding(inventoryBuildingObjects[currentInventoryIndex]);
+                    HideAllBuildingGhost();
+                    currentBuilding = null;
+                    currentInventoryIndex = -1;
+                    onCurrentBuildingChanged?.Invoke(null);
+                    return;
+                }
+
+                // Buscar y seleccionar el objeto
+                foreach (var building in inventoryBuildingObjects)
+                {
+                    if (building != null && building.inventoryIndex == targetIndex)
+                    {
+                        currentInventoryIndex = targetIndex;
+                        ChangeCurrentBuilding(building);
+                        break;
+                    }
                 }
             }
         }
     }
+
+
     public void ChangeCurrentBuilding(BuildingObject newBuilding)
     {
-        HideAllBuildingGhost();
-        currentBuilding = new CellObject(newBuilding);
-        onCurrentInventoryBuildingChanged?.Invoke(currentInventoryIndex);
+        if (GameManager.Instance.unlockedBuildings.Contains(newBuilding))
+        {
+            HideAllBuildingGhost();
+            currentBuilding = newBuilding;
+            
+            onCurrentBuildingChanged?.Invoke(currentBuilding);
+        }
     }
 
-    public void ShowGrid()
+    public void StartBuilding()
     {
+        inventoryBuildingObjects = GameManager.Instance.unlockedBuildings.ToArray();
         worldGridMaterial.DOFloat(1f,"_Amount",0.1f).SetEase(Ease.InBounce);
+        OnStartBuilding?.Invoke();
     }
 
     public void HideGrid()
@@ -106,6 +129,7 @@ public class PlayerBuilding : MonoBehaviour
         iBuildPos = -Vector2Int.one;
         iBuildDirection = -Vector2Int.one;
         lastObjectsBuilded.Clear();
+        OnStopBuilding?.Invoke();
     }
 
     public void HideAllBuildingGhost()
@@ -119,7 +143,7 @@ public class PlayerBuilding : MonoBehaviour
     {
         HideAllBuildingGhost();
 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, 5, chunkLayerMask))
+        if (Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out RaycastHit hit, 5, chunkLayerMask))
         {
             Chunk chunk = WorldManager.Instance.GetChunk(hit.point);
             Vector2Int cellPosition = chunk.GetCellCoords(hit.point);
@@ -131,7 +155,7 @@ public class PlayerBuilding : MonoBehaviour
                 iBuildPos = cellPosition;
 
             int currentMoney = GameManager.Instance.GetPlayerMoney();
-            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildValue;
+            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildCost;
             
             if (IsSnappedPosition(cellPosition))
             {
@@ -169,6 +193,8 @@ public class PlayerBuilding : MonoBehaviour
 
     void ShowBuildingGhost(CellObject building)
     {
+        if(currentBuilding == null)
+            return;
         if(!building.prefab)
             return;
         
@@ -200,7 +226,7 @@ public class PlayerBuilding : MonoBehaviour
             bool canPlace = chunk.CanPlaceCellObject(cellPosition, building.size, building.rotation);
             
             int currentMoney = GameManager.Instance.GetPlayerMoney();
-            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildValue;
+            int buildingCost = inventoryBuildingObjects[currentInventoryIndex].BuildCost;
             
             if(currentMoney < buildingCost)
                 canPlace = false;

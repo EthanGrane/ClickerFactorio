@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af27afacaceb58c4d9100aaf247f3ed2, type: 3}
-  m_Name: ILikeCookies
-  m_EditorClassIdentifier: 
-  upgradeName: I like Cookies
-  upgradeDescription: I NEED MORE COOKIES !!!!
+  m_Script: {fileID: 0}
+  m_Name: Sales2x1
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeBonus
+  upgradeName: Sales 2x1!
+  upgradeDescription: Two for the price of one? What a deal!
+  upgradeCost: 100
   upgradeType: 1
-  value: 3
-  upgradeCost: 2500
+  value: 1

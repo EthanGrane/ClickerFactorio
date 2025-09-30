@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
                 buildingMenu.SetActive(false);
                 break;
             case PlayerMode.building:
-                playerBuilding.ShowGrid();
+                playerBuilding.StartBuilding();
                 handObject.SetActive(false);
                 buildingMenu.SetActive(true);
                 break;

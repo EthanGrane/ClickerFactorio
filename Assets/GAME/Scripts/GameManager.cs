@@ -14,6 +14,12 @@ public class GameManager : MonoBehaviour
     public Action<int> OnPlayerMoneyChanged;
     public Action<Upgrade> OnPlayerBoughtUpgrade;
     
+    public List<ResourceItem> allResources = new List<ResourceItem>();
+    public List<ResourceItem> unlockedResources = new List<ResourceItem>();
+    
+    public List<BuildingObject> allBuildings = new List<BuildingObject>();
+    public List<BuildingObject> unlockedBuildings = new List<BuildingObject>();
+    
     void Awake()
     {
         if (Instance == null)
@@ -57,15 +63,18 @@ public class GameManager : MonoBehaviour
         
         for (int i = 0; i < upgrades.Count; i++)
         {
-            switch (upgrades[i].upgradeType)
+            if (upgrades[i] is UpgradeBonus bonus)
             {
-                case UpgradeType.MoneyMultiplier:
-                    clickMultiplier += upgrades[i].value;
-                    break;
-                case UpgradeType.DrillMultiplier:
-                    break;
-                case UpgradeType.DrillValue:
-                    break;
+                switch (bonus.upgradeType)
+                {
+                    case UpgradeType.MoneyMultiplier:
+                        clickMultiplier += bonus.value;
+                        break;
+                    case UpgradeType.DrillMultiplier:
+                        break;
+                    case UpgradeType.DrillValue:
+                        break;
+                }
             }
         }
         
@@ -80,14 +89,17 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < upgrades.Count; i++)
         {
-            switch (upgrades[i].upgradeType)
+            if (upgrades[i] is UpgradeBonus bonus)
             {
-                case UpgradeType.ClickDamage:
-                    flatBonus += (int)upgrades[i].value;
-                    break;
-                case UpgradeType.ClickDamageMultiplier:
-                    multiplier *= (int)upgrades[i].value;
-                    break;
+                switch (bonus.upgradeType)
+                {
+                    case UpgradeType.ClickDamage:
+                        flatBonus += (int)bonus.value;
+                        break;
+                    case UpgradeType.ClickDamageMultiplier:
+                        multiplier *= (int)bonus.value;
+                        break;
+                }
             }
         }
 
@@ -105,7 +117,17 @@ public class GameManager : MonoBehaviour
         if(!upgrades.Contains(upgrade))
         {
             upgrades.Add(upgrade);
+
+            if (upgrade is UpgradeUnlock)
+                HandleUpgradeUnlock(upgrade as UpgradeUnlock);
+            
             OnPlayerBoughtUpgrade?.Invoke(upgrade);
         }    
+    }
+
+    void HandleUpgradeUnlock(UpgradeUnlock upgradeUnlock)
+    {
+        if(unlockedBuildings.Contains(upgradeUnlock.buildingObject) == false)
+            unlockedBuildings.Add(upgradeUnlock.buildingObject);
     }
 }

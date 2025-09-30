@@ -24,11 +24,6 @@ public class PlayerHarvest : MonoBehaviour
     {
         mouseUpgradesTexturesDictionary = new Dictionary<Upgrade, Sprite>();
 
-        for (int i = 0; i < MouseUpgrades.Length && i < mouseSprites.Length; i++)
-        {
-            mouseUpgradesTexturesDictionary[MouseUpgrades[i]] = mouseSprites[i];
-        }
-
         GameManager.Instance.OnPlayerBoughtUpgrade += upgrade =>
         {
             if (mouseUpgradesTexturesDictionary.TryGetValue(upgrade, out Sprite sprite))
@@ -47,7 +42,7 @@ public class PlayerHarvest : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
 
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit, harvestDistance))
+            if (Physics.Raycast(Camera.main.transform.position,Camera.main.transform.forward, out RaycastHit hit, harvestDistance))
             {
                 if (hit.transform.GetComponent<ResourceMaterial>())
                 {

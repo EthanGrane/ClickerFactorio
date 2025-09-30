@@ -20,7 +20,15 @@ public class UpgradeHintController : MonoBehaviour
     {
         titleText.text = upgrade.upgradeName;
         descriptionText.text = $"{upgrade.upgradeDescription}";
-        upgradeText.text = $"Upgrade Bonus\n\n{upgradeMap[upgrade.upgradeType].Replace("?",upgrade.value.ToString())}";
         costText.text = $"Cost: {upgrade.upgradeCost}$";
+
+        if (upgrade is UpgradeBonus bonus)
+        {
+            upgradeText.text = $"Upgrade Bonus\n\n{upgradeMap[bonus.upgradeType].Replace("?",bonus.value.ToString())}";
+        }
+        else if (upgrade is UpgradeUnlock unlock)
+        {
+            upgradeText.text = $"Unlock\n\n{unlock.upgradeName}\n{unlock.upgradeDescription}";
+        }
     }
 }

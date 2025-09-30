@@ -9,11 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af27afacaceb58c4d9100aaf247f3ed2, type: 3}
-  m_Name: MyFirstMultiplier
+  m_Script: {fileID: 11500000, guid: 10c41bffb53d89f41b5963bb0bf8118d, type: 3}
+  m_Name: Iron
   m_EditorClassIdentifier: 
-  upgradeName: My First Multiplier
-  upgradeDescription: "Your first time?\\n (\u0360\u2256 \u035C\u0296\u0360\u2256)"
-  upgradeType: 0
-  value: 1
-  upgradeCost: 7500
+  itemName: Iron
+  itemDescription: 
+  itemValue: 5
+  itemIcon: {fileID: 21300000, guid: f2d431ab839697d41874687ac15bda39, type: 3}

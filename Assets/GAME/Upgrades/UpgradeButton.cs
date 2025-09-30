@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class UpgradeButton : MonoBehaviour
 {
     public Button upgradeButton;
     public Upgrade upgrade;
-    public UpgradeButton nextUpgradeButton;
+    [FormerlySerializedAs("nextUpgradeButton")] public UpgradeButton[] nextUpgradeButtons;
+    public Sprite icon;
     
     UpgradeController upgradeController;
     ButtonEvents buttonEvents;
@@ -15,6 +17,14 @@ public class UpgradeButton : MonoBehaviour
     {
         if (upgradeButton == null)
             upgradeButton = GetComponentInChildren<Button>();
+    }
+
+    void OnValidate()
+    {
+        if (icon == null)
+            icon = transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite;
+        
+        transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = icon;
     }
 
     private void Start()
@@ -62,8 +72,12 @@ public class UpgradeButton : MonoBehaviour
             DisableButton();
 
             // Se activa y muestra el siguiente en la cadena
-            if (nextUpgradeButton != null)
-                nextUpgradeButton.ShowAndEnable();
+            if (nextUpgradeButtons != null)
+                for (int i = 0; i < nextUpgradeButtons.Length; i++)
+                {
+                    if(nextUpgradeButtons[i] != null)
+                        nextUpgradeButtons[i].ShowAndEnable();
+                }
         }
     }
     

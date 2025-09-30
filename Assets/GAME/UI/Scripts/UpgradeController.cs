@@ -146,7 +146,7 @@ public class UpgradeController : MonoBehaviour
         _isShowing = true;
         
         backgroundMaterial.SetFloat(Disolve,1);
-        _volumeWeight = 1;
+        _volumeWeight = 0;
         upgradeVolume.weight = _volumeWeight;
 
         upgradesHint.gameObject.SetActive(true);

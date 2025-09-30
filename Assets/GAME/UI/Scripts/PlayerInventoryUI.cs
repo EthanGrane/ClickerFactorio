@@ -21,16 +21,8 @@ public class PlayerInventoryUI : MonoBehaviour
 
     private void Start()
     {
-        playerInventory.inventory.OnItemAdded += ()=>
-        {
-            Debug.Log("OnItemAdded");
-            UpdateUI();
-        };
-        playerInventory.inventory.OnItemRemoved += ()=>
-        {
-            Debug.Log("OnItemRemoved");
-            UpdateUI();
-        };
+        playerInventory.inventory.OnItemAdded += UpdateUI;
+        playerInventory.inventory.OnItemRemoved += UpdateUI;
 
         inventoryItems = new GameObject[resourceItemsOrder.Length];
         for (int i = 0; i < resourceItemsOrder.Length; i++)

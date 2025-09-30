@@ -1,19 +1,23 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [System.Serializable]
-public class BuildingObject
+[CreateAssetMenu(fileName = "New Building Object", menuName = "GAME/Building Object")]
+public class BuildingObject : ScriptableObject
 {
-    public GameObject prefab;      // el objeto que se instanciará
-    public int size = 1; // tamaño en celdas
+    public GameObject prefab;
+    public int size = 1;
     public int rotation = 0;
-    public int BuildValue;
-
-    public BuildingObject(GameObject prefab, int size,int rotation, int BuildValue)
+    [FormerlySerializedAs("BuildValue")] public int BuildCost;
+    public Sprite buildingSprite;
+    public int inventoryIndex = 0;
+    
+    public BuildingObject(GameObject prefab, int size,int rotation, int buildCost)
     {
         this.prefab = prefab;
         this.size = size;
         this.rotation = rotation;
-        this.BuildValue = BuildValue;
+        this.BuildCost = buildCost;
     }
 }

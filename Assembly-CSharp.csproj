@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\GAME\World\Scripts\Chunk.cs" />
+    <Compile Include="Assets\GAME\Upgrades\UpgradeBonus.cs" />
     <Compile Include="Assets\GAME\World\Scripts\Visuals\Clouds.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\UpgradeHintController.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\InventoryMenuController.cs" />
@@ -56,7 +57,6 @@
     <Compile Include="Assets\GAME\UI\Scripts\Utility\ButtonEvents.cs" />
     <Compile Include="Assets\GAME\World\Scripts\ICellObject.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerMover.cs" />
-    <Compile Include="Assets\GAME\Scripts\Upgrades\Upgrade.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\HarvestResource_UI.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IBuilding.cs" />
     <Compile Include="Assets\GAME\Resources\Scripts\ResourceMaterial.cs" />
@@ -66,7 +66,7 @@
     <Compile Include="Assets\GAME\World\Scripts\Cell.cs" />
     <Compile Include="Assets\GAME\World\Scripts\WorldManager.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\CellObject.cs" />
-    <Compile Include="Assets\GAME\Scripts\Upgrades\UpgradeButton.cs" />
+    <Compile Include="Assets\GAME\Upgrades\Upgrade.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\Inventory.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\RectTransformAnimation.cs" />
     <Compile Include="Assets\GAME\Buildings\Scripts\IInventory.cs" />
@@ -84,6 +84,8 @@
     <Compile Include="Assets\GAME\Player\Scripts\PlayerController.cs" />
     <Compile Include="Assets\GAME\UI\Scripts\PlayerMoneyUI.cs" />
     <Compile Include="Assets\GAME\Player\Scripts\PlayerBuilding.cs" />
+    <Compile Include="Assets\GAME\Upgrades\UpgradeUnlock.cs" />
+    <Compile Include="Assets\GAME\Upgrades\UpgradeButton.cs" />
     <Compile Include="Assets\GAME\Scripts\GameManager.cs" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
