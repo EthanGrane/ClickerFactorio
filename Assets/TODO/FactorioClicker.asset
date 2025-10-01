@@ -14,20 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tasks:
   - taskName: Si dos inputs entran por el mismo sitio se solapan los objetos
-    tag: 1
+    tag: 4
     notes: 
   - taskName: Arbol de mejoras
-    tag: 1
+    tag: 4
     notes: 
   - taskName: Rework Conveyor System using IInventory
-    tag: 1
+    tag: 4
     notes: 
   - taskName: Caja de inventario
-    tag: 1
+    tag: 4
     notes: 'Objetivo: El conveyor busque por IInventory y saque los items de la caja,
       y luego que pueda volver a meterlos dentro.'
   - taskName: Rework de inventario player
-    tag: 1
+    tag: 4
     notes: 'El dinero se consigue al acabar de picar un material
 
       al hacer
@@ -36,5 +36,16 @@ MonoBehaviour:
       Puedes vender los recursos en el mercado
       a cambio de dinero'
   - taskName: Harvest dosent clean cellobject whe resource destroyed
-    tag: 1
+    tag: 4
     notes: 
+  - taskName: Critical Hit
+    tag: 0
+    notes: 
+  - taskName: Golden Materials
+    tag: 0
+    notes: Speed Bonus / Critical Chance bonus
+  - taskName: Can Withdraw and Depot items to inventories
+    tag: 0
+    notes: 'E -> Depot
+
+      Q -> Withdraw'

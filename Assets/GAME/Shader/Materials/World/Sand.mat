@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Stone
+  m_Name: Sand
   m_Shader: {fileID: -6465566751694194690, guid: f82394e49560496458db71247f957eab, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -38,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 111c693fef10bf5428c01bca7ec4fa66, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5c282de469f9b9a41bb53afb2652efcd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -62,7 +62,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 111c693fef10bf5428c01bca7ec4fa66, type: 3}
+        m_Texture: {fileID: 2800000, guid: 5c282de469f9b9a41bb53afb2652efcd, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
@@ -82,7 +82,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 5c282de469f9b9a41bb53afb2652efcd, type: 3}
+        m_Texture: {fileID: 2800000, guid: 02063ece6dbc37c4d9d0b484a0a5cfc7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -130,13 +130,13 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
-    - _TIle: 0.5
+    - _TIle: 1
     - _UVSec: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 0.7075472, g: 0.7075472, b: 0.7075472, a: 1}
+    - _BaseColor: {r: 0.8980392, g: 0.70321333, b: 0.4, a: 1}
+    - _Color: {r: 1, g: 0.7975784, b: 0.48584908, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []

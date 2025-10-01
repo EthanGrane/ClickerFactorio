@@ -8,19 +8,26 @@ public class PlayerMover : MonoBehaviour
     public float gravity = -9.81f;
     public float jumpHeight = 1.5f;
 
+    [Header("Dash")]
+    public float dashForce = 15f;
+    public float dashDecay = 5f; // qué tan rápido pierde inercia
+
     [Header("Camara")]
     public float mouseSensitivity = 2f;
     public Transform cameraTransform;
 
     [Header("Ground Check")]
-    public Transform groundCheck;      // un empty bajo el jugador (en los pies)
-    public float groundRadius = 0.3f;  // radio del sphere check
-    public LayerMask groundMask;       // capa de colisión para el suelo
+    public Transform groundCheck;      
+    public float groundRadius = 0.3f;  
+    public LayerMask groundMask;       
 
     CharacterController controller;
-    Vector3 velocity;
+    Vector3 verticalVelocity;
+    Vector3 dashVelocity;
     float cameraPitch = 0f;
     bool isGrounded;
+    bool doubleJump = false;
+    bool isDashing = false;
 
     void Awake()
     {
@@ -45,25 +52,26 @@ public class PlayerMover : MonoBehaviour
             if (Cursor.lockState == CursorLockMode.Locked)
             {
                 Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true; // mostrar al desbloquear
+                Cursor.visible = true;
             }
             else
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false; // ocultar al bloquear
+                Cursor.visible = false;
             }
         }
     }
 
-    
     void HandleGroundCheck()
     {
-        // sphere check para detectar suelo
         isGrounded = Physics.CheckSphere(groundCheck.position, groundRadius, groundMask);
 
-        if (isGrounded && velocity.y < 0)
+        if (isGrounded && verticalVelocity.y < 0)
         {
-            velocity.y = -2f; // pequeño "stick to ground"
+            verticalVelocity.y = -2f; 
+            dashVelocity = Vector3.zero;
+            doubleJump = false;
+            isDashing = false;
         }
     }
 
@@ -77,13 +85,44 @@ public class PlayerMover : MonoBehaviour
 
         controller.Move(move * moveSpeed * Time.deltaTime);
 
+        // salto normal
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        // doble salto con dash
+        if (Input.GetButtonDown("Jump") && !doubleJump && !isGrounded)
+        {
+            verticalVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            dashVelocity = cameraForwardXZ() * dashForce;
+            isDashing = true;
+            doubleJump = true;
+        }
+
+        // si estamos en dash → redirige la inercia hacia el forward actual de la cámara
+        if (isDashing)
+        {
+            // desacelera
+            dashVelocity = Vector3.Lerp(dashVelocity, Vector3.zero, dashDecay * Time.deltaTime);
+
+            // reorienta la inercia al nuevo forward (conservando magnitud)
+            if (dashVelocity.magnitude > 0.1f)
+            {
+                dashVelocity = cameraForwardXZ() * dashVelocity.magnitude;
+            }
+            else
+            {
+                dashVelocity = Vector3.zero;
+                isDashing = false;
+            }
+        }
+
+        // gravedad
+        verticalVelocity.y += gravity * Time.deltaTime;
+
+        // movimiento final
+        controller.Move((verticalVelocity + dashVelocity) * Time.deltaTime);
     }
 
     void HandleMouseLook()
@@ -96,6 +135,13 @@ public class PlayerMover : MonoBehaviour
         cameraPitch -= mouseY;
         cameraPitch = Mathf.Clamp(cameraPitch, -80f, 80f);
         cameraTransform.localEulerAngles = Vector3.right * cameraPitch;
+    }
+
+    private Vector3 cameraForwardXZ()
+    {
+        Vector3 fwd = cameraTransform.forward;
+        fwd.y = 0;
+        return fwd.normalized;
     }
 
     private void OnDrawGizmosSelected()

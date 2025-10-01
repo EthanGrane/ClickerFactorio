@@ -16,7 +16,8 @@ namespace ToDo_CodeTrigger
         Todo,
         Finished,
         WorkingOn,
-        Idea
+        Idea,
+        Hidden
     }
 
     [System.Serializable]
@@ -47,118 +48,142 @@ namespace ToDo_CodeTrigger
         }
 
         public override void OnInspectorGUI()
-{
-    serializedObject.Update();
-
-    EditorGUILayout.LabelField(((ToDo_SO)target).name, EditorStyles.boldLabel);
-    EditorGUILayout.Space();
-
-    // === Show Only One Tag ===
-    EditorGUILayout.BeginHorizontal();
-    EditorGUILayout.LabelField("Show Only Tag:", GUILayout.Width(90));
-    filterTag = (TaskTag)EditorGUILayout.EnumPopup(filterTag);
-    if (GUILayout.Button("Clear", GUILayout.Width(60)))
-    {
-        filterTag = (TaskTag)(-1);
-    }
-    EditorGUILayout.EndHorizontal();
-    EditorGUILayout.Space();
-
-    // === Hide Multiple Tags (foldout) ===
-    showExcludeTags = EditorGUILayout.Foldout(showExcludeTags, "Hide Tags");
-    if (showExcludeTags)
-    {
-        EditorGUI.indentLevel++;
-        for (int i = 0; i < excludeTagMask.Length; i++)
         {
-            excludeTagMask[i] = EditorGUILayout.ToggleLeft(((TaskTag)i).ToString(), excludeTagMask[i]);
-        }
-        EditorGUI.indentLevel--;
+        serializedObject.Update();
+
+        EditorGUILayout.LabelField(((ToDo_SO)target).name, EditorStyles.boldLabel);
         EditorGUILayout.Space();
-    }
 
-    // === Render Tasks ===
-    for (int i = 0; i < tasks.arraySize; i++)
-    {
-        SerializedProperty item = tasks.GetArrayElementAtIndex(i);
-        SerializedProperty taskName = item.FindPropertyRelative("taskName");
-        SerializedProperty tag = item.FindPropertyRelative("tag");
-        SerializedProperty notes = item.FindPropertyRelative("notes");
-
-        // Apply filters
-        if ((int)filterTag != -1 && tag.enumValueIndex != (int)filterTag)
-            continue;
-
-        if (excludeTagMask[tag.enumValueIndex])
-            continue;
-
-        // Background color per tag
-        Color originalColor = GUI.backgroundColor;
-
-        switch ((TaskTag)tag.enumValueIndex)
+        // === Show Only One Tag ===
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField("Show Only Tag:", GUILayout.Width(90));
+        filterTag = (TaskTag)EditorGUILayout.EnumPopup(filterTag);
+        if (GUILayout.Button("Clear", GUILayout.Width(60)))
         {
-            case TaskTag.Finished:
-                GUI.backgroundColor = finishedColor;
-                break;
-            case TaskTag.WorkingOn:
-                GUI.backgroundColor = workingOnColor;
-                break;
-            case TaskTag.Idea:
-                GUI.backgroundColor = ideaColor;
-                break;
-            default:
+            filterTag = (TaskTag)(-1);
+        }
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.Space();
+
+        if (GUILayout.Button("Hide all Finished Tasks", GUILayout.Width(150)))
+        {
+            for (int i = 0; i < tasks.arraySize; i++)
+            {
+                SerializedProperty item = tasks.GetArrayElementAtIndex(i);
+                SerializedProperty tag = item.FindPropertyRelative("tag");
+
+                if ((TaskTag)tag.enumValueIndex == TaskTag.Finished)
+                {
+                    tag.enumValueIndex = (int)TaskTag.Hidden;
+                }
+            }
+        }
+
+        // === Hide Multiple Tags (foldout) ===
+        showExcludeTags = EditorGUILayout.Foldout(showExcludeTags, "Hide Tags");
+        if (showExcludeTags)
+        {
+            EditorGUI.indentLevel++;
+            for (int i = 0; i < excludeTagMask.Length; i++)
+            {
+                excludeTagMask[i] = EditorGUILayout.ToggleLeft(((TaskTag)i).ToString(), excludeTagMask[i]);
+            }
+            EditorGUI.indentLevel--;
+            EditorGUILayout.Space();
+        }
+
+        // === Render Tasks ===
+        for (int i = 0; i < tasks.arraySize; i++)
+        {
+            SerializedProperty item = tasks.GetArrayElementAtIndex(i);
+            SerializedProperty taskName = item.FindPropertyRelative("taskName");
+            SerializedProperty tag = item.FindPropertyRelative("tag");
+            SerializedProperty notes = item.FindPropertyRelative("notes");
+
+            // Apply filters
+            if ((TaskTag)tag.enumValueIndex == TaskTag.Hidden)
+            {
+                if ((TaskTag)filterTag != TaskTag.Hidden)
+                    continue;
+            }
+            else
+            {
+                // Para otros tags, aplica filtro normal
+                if ((int)filterTag != -1 && tag.enumValueIndex != (int)filterTag)
+                    continue;
+            }
+
+
+            if (excludeTagMask[tag.enumValueIndex])
+                continue;
+
+            // Background color per tag
+            Color originalColor = GUI.backgroundColor;
+
+            switch ((TaskTag)tag.enumValueIndex)
+            {
+                case TaskTag.Finished:
+                    GUI.backgroundColor = finishedColor;
+                    break;
+                case TaskTag.WorkingOn:
+                    GUI.backgroundColor = workingOnColor;
+                    break;
+                case TaskTag.Idea:
+                    GUI.backgroundColor = ideaColor;
+                    break;
+                default:
+                    GUI.backgroundColor = originalColor;
+                    break;
+            }
+
+            EditorGUILayout.BeginVertical("box");
+
+            // Header: name, move, remove
+            EditorGUILayout.BeginHorizontal();
+
+            taskName.stringValue = EditorGUILayout.TextField(taskName.stringValue);
+
+            if (GUILayout.Button("↑", GUILayout.Width(25)) && i > 0)
+                tasks.MoveArrayElement(i, i - 1);
+
+            if (GUILayout.Button("↓", GUILayout.Width(25)) && i < tasks.arraySize - 1)
+                tasks.MoveArrayElement(i, i + 1);
+
+            if (GUILayout.Button("X", GUILayout.Width(20)))
+            {
+                tasks.DeleteArrayElementAtIndex(i);
                 GUI.backgroundColor = originalColor;
                 break;
-        }
+            }
 
-        EditorGUILayout.BeginVertical("box");
+            EditorGUILayout.EndHorizontal();
 
-        // Header: name, move, remove
-        EditorGUILayout.BeginHorizontal();
+            // Tag
+            EditorGUILayout.PropertyField(tag, new GUIContent("Tag"));
 
-        taskName.stringValue = EditorGUILayout.TextField(taskName.stringValue);
+            // Notes with word wrap
+            GUIStyle textAreaStyle = new GUIStyle(EditorStyles.textArea);
+            textAreaStyle.wordWrap = true;
+            notes.stringValue = EditorGUILayout.TextArea(notes.stringValue, textAreaStyle, GUILayout.MinHeight(60));
 
-        if (GUILayout.Button("↑", GUILayout.Width(25)) && i > 0)
-            tasks.MoveArrayElement(i, i - 1);
-
-        if (GUILayout.Button("↓", GUILayout.Width(25)) && i < tasks.arraySize - 1)
-            tasks.MoveArrayElement(i, i + 1);
-
-        if (GUILayout.Button("X", GUILayout.Width(20)))
-        {
-            tasks.DeleteArrayElementAtIndex(i);
+            EditorGUILayout.EndVertical();
             GUI.backgroundColor = originalColor;
-            break;
+
+            EditorGUILayout.Space();
         }
 
-        EditorGUILayout.EndHorizontal();
+        // Add Task
+        if (GUILayout.Button("+ Add Task"))
+        {
+            tasks.InsertArrayElementAtIndex(tasks.arraySize);
+            SerializedProperty newItem = tasks.GetArrayElementAtIndex(tasks.arraySize - 1);
+            newItem.FindPropertyRelative("taskName").stringValue = "New Task";
+            newItem.FindPropertyRelative("tag").enumValueIndex = 0;
+            newItem.FindPropertyRelative("notes").stringValue = "";
+        }
 
-        // Tag
-        EditorGUILayout.PropertyField(tag, new GUIContent("Tag"));
-
-        // Notes with word wrap
-        GUIStyle textAreaStyle = new GUIStyle(EditorStyles.textArea);
-        textAreaStyle.wordWrap = true;
-        notes.stringValue = EditorGUILayout.TextArea(notes.stringValue, textAreaStyle, GUILayout.MinHeight(60));
-
-        EditorGUILayout.EndVertical();
-        GUI.backgroundColor = originalColor;
-
-        EditorGUILayout.Space();
+        serializedObject.ApplyModifiedProperties();
     }
-
-    // Add Task
-    if (GUILayout.Button("+ Add Task"))
-    {
-        tasks.InsertArrayElementAtIndex(tasks.arraySize);
-        SerializedProperty newItem = tasks.GetArrayElementAtIndex(tasks.arraySize - 1);
-        newItem.FindPropertyRelative("taskName").stringValue = "New Task";
-        newItem.FindPropertyRelative("tag").enumValueIndex = (int)filterTag;
-        newItem.FindPropertyRelative("notes").stringValue = "";
-    }
-
-    serializedObject.ApplyModifiedProperties();
-}
 
     }
 }

@@ -7,17 +7,14 @@ using Random = UnityEngine.Random;
 public class WorldManager : MonoBehaviour
 {
     public static WorldManager Instance { get; private set; }
-
-    public int worldSizeRadius = 16;
     public int seed;
-
-    public int ticksPerSecond = 4;
     public Action onTick;
 
-    public GameObject[] chunkPrefabs;
-    public List<Chunk> chunks = new List<Chunk>();
-
-    private Coroutine tickCoroutine;
+    public GameObject islandPrefab;
+    List<Island> islands = new List<Island>();
+    
+    int ticksPerSecond = 8;
+    Coroutine tickCoroutine;
 
     void Awake()
     {
@@ -36,62 +33,82 @@ public class WorldManager : MonoBehaviour
     {
         if(seed == 0)
             seed = Random.Range(int.MinValue, int.MaxValue);
-        
-        InitializeWorld();
         StartTicks();
+        CreateIsland(seed,Vector2Int.zero);
+        CreateIsland(seed,Vector2Int.right);
     }
 
-    public void InitializeWorld()
+    public void CreateIsland(int seed, Vector2Int position)
     {
-        for (int x = -worldSizeRadius; x <= worldSizeRadius; x++)
-        {
-            for (int z = -worldSizeRadius; z <= worldSizeRadius; z++)
-            {
-                float r = MathUtils.Random01(x, z, seed);
-
-                GameObject chunkPrefab;
-                if (r < 0.75f)
-                    chunkPrefab = chunkPrefabs[0];
-                else
-                    chunkPrefab = chunkPrefabs[1];
-                
-                GameObject newChunk = Instantiate(chunkPrefab, transform);
-
-                Chunk chunk = newChunk.GetComponent<Chunk>();
-                chunk.chunkPosition = new Vector2Int(x, z);
-                chunk.InitializeChunk(0,chunk.height);
-
-                Vector3 chunkWorldPosition = new Vector3(
-                    chunk.chunkPosition.x * (int)Chunk.CHUNK_SIZE,
-                    chunk.height,
-                    chunk.chunkPosition.y * (int)Chunk.CHUNK_SIZE
-                );
-
-                newChunk.transform.position = chunkWorldPosition;
-                newChunk.name = $"Chunk {chunk.chunkPosition}";
-                chunks.Add(chunk);
-            }
-        }
+        // cada isla tiene un tamaño de 50x50
+        GameObject go_island = Instantiate(islandPrefab, transform);
+        
+        Island island = go_island.GetComponent<Island>();
+        island.InitializeIsland(position, seed);
+        islands.Add(island);
     }
-
+    
     public Chunk GetChunk(Vector3 worldPosition)
     {
-        foreach (var chunk in chunks)
+        Island island = GetIsland(worldPosition);
+        if (island != null)
         {
-            Vector3 chunkCenter = chunk.transform.position;
-            float chunkSize = Chunk.CHUNK_SIZE;
-            if (worldPosition.x < chunkCenter.x + chunkSize * 0.5f && worldPosition.z < chunkCenter.z + chunkSize * 0.5f)
+            foreach (var chunk in island.chunks)
             {
-                return chunk;
+                if (chunk == null) continue; // chunk de agua
+                Vector3 chunkCenter = chunk.transform.position;
+                float chunkSize = Chunk.CHUNK_SIZE;
+            
+                // Verificamos si el worldPosition cae dentro de este chunk
+                if (worldPosition.x >= chunkCenter.x - chunkSize / 2 &&
+                    worldPosition.x < chunkCenter.x + chunkSize / 2 &&
+                    worldPosition.z >= chunkCenter.z - chunkSize / 2 &&
+                    worldPosition.z < chunkCenter.z + chunkSize / 2)
+                {
+                    return chunk;
+                }
             }
         }
+
+        // No hay chunk → es agua
+        return null;
+    }
+
+    public Island GetIsland(Vector3 worldPosition)
+    {
+        float islandSize = Chunk.CHUNK_SIZE * (Island.ISLAND_RADIUS + 1) * 2;
+
+        foreach (var island in islands)
+        {
+            Vector3 center = new Vector3(
+                island.islandPosition.x * islandSize,
+                0,
+                island.islandPosition.y * islandSize
+            );
+
+            if (worldPosition.x >= center.x - islandSize / 2 && worldPosition.x < center.x + islandSize / 2 &&
+                worldPosition.z >= center.z - islandSize / 2 && worldPosition.z < center.z + islandSize / 2)
+            {
+                return island;
+            }
+        }
+
         return null;
     }
 
     public void DestroyCellObject(Vector3 worldPosition)
     {
         Chunk chunk = GetChunk(worldPosition);
-        chunk.RemoveCellObject(chunk.GetCellCoords(worldPosition));
+    
+        if (chunk == null)
+        {
+            // chunk es agua, no hay objeto que destruir
+            Debug.Log("Intentaste destruir un chunk de agua en " + worldPosition);
+            return;
+        }
+
+        Vector2Int cellCoords = chunk.GetCellCoords(worldPosition);
+        chunk.RemoveCellObject(cellCoords);
     }
     
     // ---------------- TICK SYSTEM ----------------
@@ -103,18 +120,24 @@ public class WorldManager : MonoBehaviour
 
         onTick += () =>
         {
-            foreach (var chunk in chunks)
+            foreach (var island in islands)
             {
-                foreach (var building in chunk.chunkBuildings)
+                foreach (var chunk in island.chunks)
                 {
-                    building.obj.GetComponent<IBuilding>().PlanTick();
-                }
-                
-                foreach (var building in chunk.chunkBuildings)
-                {
-                    building.obj.GetComponent<IBuilding>().ActionTick();
+                    if (chunk == null) continue;
+
+                    foreach (var building in chunk.chunkBuildings)
+                    {
+                        building.obj.GetComponent<IBuilding>().PlanTick();
+                    }
+                    
+                    foreach (var building in chunk.chunkBuildings)
+                    {
+                        building.obj.GetComponent<IBuilding>().ActionTick();
+                    }
                 }
             }
+
         };
     }
 
